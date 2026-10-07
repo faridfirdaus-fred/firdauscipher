@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { fromBase64, toBase64 } from "./core";
 import {
+  CIPHER_ID_BY_SLUG,
   CIPHER_ID_NAMES,
   CipherId,
   datFileName,
@@ -76,9 +77,24 @@ describe("Envelope KRI1 (S03)", () => {
     expect(unpackEnvelope(packed).header.name).toBe("laporan-tugas-akhir-ü.jpg");
   });
 
-  it("semua 8 cipher punya nama di CIPHER_ID_NAMES", () => {
+  it("semua cipher di enum punya nama di CIPHER_ID_NAMES", () => {
     for (const id of Object.values(CipherId)) {
       expect(CIPHER_ID_NAMES[id]).toBeTruthy();
+    }
+  });
+
+  it("CIPHER_ID_NAMES <-> CIPHER_ID_BY_SLUG konsisten dua arah", () => {
+    for (const [id, slug] of Object.entries(CIPHER_ID_NAMES)) {
+      expect(CIPHER_ID_BY_SLUG[slug]).toBe(Number(id));
+    }
+    for (const [slug, id] of Object.entries(CIPHER_ID_BY_SLUG)) {
+      expect(CIPHER_ID_NAMES[id]).toBe(slug);
+    }
+  });
+
+  it("setiap slug di registry punya id envelope (tidak ada yang jatuh ke undefined)", () => {
+    for (const slug of Object.values(CIPHER_ID_NAMES)) {
+      expect(CIPHER_ID_BY_SLUG[slug]).toBeGreaterThan(0);
     }
   });
 

@@ -57,8 +57,12 @@ offset    ukuran   isi
 | 6 | Hill | f |
 | 7 | Super Enkripsi | g |
 | 8 | Enigma | h |
+| 9 | Transposisi Kolom (ekstensi) | bagian dari g |
 
-Nilai `0` dan `≥9` tidak dipakai. Konstanta ada di `CipherId` (`envelope.ts`).
+Nilai `0` dan `≥10` tidak dipakai. Nilai `9` adalah ekstensi tambahan
+(Transposisi Kolom berdiri sendiri) — membaca file lama tidak terpengaruh
+karena hanya nilai baru yang ditambahkan. Konstanta ada di `CipherId`
+(`envelope.ts`).
 
 ## 4. Mode payload
 

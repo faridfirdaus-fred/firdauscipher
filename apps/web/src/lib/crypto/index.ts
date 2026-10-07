@@ -19,7 +19,7 @@ import { decryptHill, encryptHill, parseMatrix } from "./hill";
 import { decryptExtVigenere, encryptExtVigenere } from "./extended-vigenere";
 import { decryptColumnar, encryptColumnar } from "./columnar";
 import { superDecrypt, superEncrypt } from "./super-encryption";
-import { DEFAULT_ENIGMA, decryptEnigma, encryptEnigma, ROTOR_WIRING, REFLECTOR_WIRING } from "./enigma";
+import { decryptEnigma, encryptEnigma, ROTOR_WIRING, REFLECTOR_WIRING } from "./enigma";
 
 export * from "./core";
 export * from "./envelope";
@@ -63,12 +63,30 @@ export interface CipherDef {
 /** Nilai parameter yang dikirim GUI (semua string). */
 export type CipherParams = Record<string, string>;
 
-function need(params: CipherParams, name: string): string {
+/** Ambil field kunci wajib; pesan errornya menyebut nama field & cara memperbaiki (S17). */
+function need(params: CipherParams, name: string, label?: string): string {
   const v = params[name];
   if (v === undefined || v.trim() === "") {
-    throw new Error(`Kunci "${name}" wajib diisi.`);
+    throw new Error(
+      `Kunci "${label ?? name}" wajib diisi — isi dulu kolomnya sebelum memproses.`,
+    );
   }
   return v;
+}
+
+/**
+ * Validasi kunci kata-sandi untuk cipher 26 huruf: harus punya minimal
+ * satu huruf A-Z. Tanpa ini, kunci seperti "12345" diterima diam-diam
+ * dan hasilnya membingungkan pemakai (S17).
+ */
+function needAlphaKey(key: string, label: string, cipherName: string): string {
+  if (!/[a-z]/i.test(key)) {
+    throw new Error(
+      `Kunci "${label}" untuk ${cipherName} harus memuat minimal satu huruf A-Z ` +
+        `(kunci "${key}" tidak punya huruf sama sekali).`,
+    );
+  }
+  return key;
 }
 
 /** Jalankan cipher berdasarkan slug. */
@@ -82,21 +100,21 @@ export function runCipher(
   switch (slug) {
     case "vigenere": {
       const text = bytesToUtf8(input);
-      const key = need(params, "key");
+      const key = needAlphaKey(need(params, "key"), "key", "Vigenere");
       return utf8ToBytes(enc ? encryptVigenere(text, key) : decryptVigenere(text, key));
     }
     case "autokey": {
       const text = bytesToUtf8(input);
-      const key = need(params, "key");
+      const key = needAlphaKey(need(params, "key"), "key", "Auto-Key Vigenere");
       return utf8ToBytes(enc ? encryptAutoKey(text, key) : decryptAutoKey(text, key));
     }
     case "ext-vigenere": {
-      const key = need(params, "key");
+      const key = need(params, "key", "Kunci (Extended Vigenere)");
       return enc ? encryptExtVigenere(input, key) : decryptExtVigenere(input, key);
     }
     case "playfair": {
       const text = bytesToUtf8(input);
-      const key = need(params, "key");
+      const key = needAlphaKey(need(params, "key"), "key", "Playfair");
       return utf8ToBytes(enc ? encryptPlayfair(text, key) : decryptPlayfair(text, key));
     }
     case "affine": {
@@ -113,12 +131,16 @@ export function runCipher(
       return utf8ToBytes(enc ? encryptHill(text, matrix) : decryptHill(text, matrix));
     }
     case "columnar": {
-      const key = need(params, "key");
+      const key = needAlphaKey(need(params, "key"), "key", "Transposisi Kolom");
       return enc ? encryptColumnar(input, key) : decryptColumnar(input, key);
     }
     case "super": {
-      const key1 = need(params, "key1");
-      const key2 = need(params, "key2");
+      const key1 = need(params, "key1", "Kunci 1 (Extended Vigenere)");
+      const key2 = needAlphaKey(
+        need(params, "key2", "key2"),
+        "key2",
+        "Super Enkripsi",
+      );
       return enc ? superEncrypt(input, key1, key2) : superDecrypt(input, key1, key2);
     }
     case "enigma": {
@@ -147,7 +169,7 @@ export const CIPHERS: CipherDef[] = [
     mode: "base64-text",
     isAlpha: true,
     description: "C = (P + K) mod 26, kunci diulang. Hanya huruf A-Z yang diproses.",
-    keyFields: [{ name: "key", label: "Kunci", type: "text", placeholder: "LEMON", help: "Huruf bebas, panjang bebas." }],
+    keyFields: [{ name: "key", label: "Kunci", type: "text", defaultValue: "LEMON", placeholder: "LEMON", help: "Huruf bebas, panjang bebas." }],
   },
   {
     id: CipherId.AUTOKEY,
@@ -157,7 +179,7 @@ export const CIPHERS: CipherDef[] = [
     mode: "base64-text",
     isAlpha: true,
     description: "Keystream = kunci diikuti plaintext itu sendiri.",
-    keyFields: [{ name: "key", label: "Kunci", type: "text", placeholder: "QUEENLY" }],
+    keyFields: [{ name: "key", label: "Kunci", type: "text", defaultValue: "QUEENLY", placeholder: "QUEENLY" }],
   },
   {
     id: CipherId.EXT_VIGENERE,
@@ -167,7 +189,7 @@ export const CIPHERS: CipherDef[] = [
     mode: "binary",
     isAlpha: false,
     description: "Modulo 256, semua byte termasuk 0x00 dan header file ikut diproses.",
-    keyFields: [{ name: "key", label: "Kunci", type: "text", placeholder: "kunci rahasia" }],
+    keyFields: [{ name: "key", label: "Kunci", type: "text", defaultValue: "RAHASIA", placeholder: "kunci rahasia" }],
   },
   {
     id: CipherId.PLAYFAIR,
@@ -177,7 +199,7 @@ export const CIPHERS: CipherDef[] = [
     mode: "base64-text",
     isAlpha: true,
     description: "Matriks 5x5, I/J digabung, digraph, filler X.",
-    keyFields: [{ name: "key", label: "Kunci", type: "text", placeholder: "MONARCHY" }],
+    keyFields: [{ name: "key", label: "Kunci", type: "text", defaultValue: "MONARCHY", placeholder: "MONARCHY" }],
   },
   {
     id: CipherId.AFFINE,
@@ -218,14 +240,14 @@ export const CIPHERS: CipherDef[] = [
     ],
   },
   {
-    id: CipherId.EXT_VIGENERE,
+    id: CipherId.COLUMNAR,
     slug: "columnar",
     letter: "g",
     name: "Transposisi Kolom",
     mode: "binary",
     isAlpha: false,
     description: "Transposisi kolom pada byte. Dipakai juga sebagai tahap 2 Super Enkripsi.",
-    keyFields: [{ name: "key", label: "Kunci", type: "text", placeholder: "ZEBRAS" }],
+    keyFields: [{ name: "key", label: "Kunci", type: "text", defaultValue: "ZEBRAS", placeholder: "ZEBRAS" }],
   },
   {
     id: CipherId.SUPER,
@@ -236,8 +258,8 @@ export const CIPHERS: CipherDef[] = [
     isAlpha: false,
     description: "Extended Vigenere lalu Transposisi Kolom (dua kunci terpisah).",
     keyFields: [
-      { name: "key1", label: "Kunci 1 (Extended Vigenere)", type: "text", placeholder: "kunci-vigenere" },
-      { name: "key2", label: "Kunci 2 (Transposisi Kolom)", type: "text", placeholder: "ZEBRAS" },
+      { name: "key1", label: "Kunci 1 (Extended Vigenere)", type: "text", defaultValue: "RAHASIA", placeholder: "kunci-vigenere" },
+      { name: "key2", label: "Kunci 2 (Transposisi Kolom)", type: "text", defaultValue: "ZEBRAS", placeholder: "ZEBRAS" },
     ],
   },
   {

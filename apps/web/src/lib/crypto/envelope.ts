@@ -29,6 +29,8 @@ export const CipherId = {
   HILL: 6,
   SUPER: 7,
   ENIGMA: 8,
+  /** Ekstensi: Transposisi Kolom berdiri sendiri (tahap 2 Super Enkripsi). */
+  COLUMNAR: 9,
 } as const;
 
 export type CipherIdValue = (typeof CipherId)[keyof typeof CipherId];
@@ -42,6 +44,7 @@ export const CIPHER_ID_NAMES: Record<number, string> = {
   6: "hill",
   7: "super",
   8: "enigma",
+  9: "columnar",
 };
 
 /** Mode payload: byte mentah, atau teks base64 (cipher 26 huruf). */
@@ -124,6 +127,11 @@ export function unpackEnvelope(bytes: Uint8Array): Envelope {
   }
   return { cipher, header, payload: bytes.subarray(headerEnd) };
 }
+
+/** Kebalikan dari CIPHER_ID_NAMES: slug -> id (untuk menulis envelope). */
+export const CIPHER_ID_BY_SLUG: Record<string, number> = Object.fromEntries(
+  Object.entries(CIPHER_ID_NAMES).map(([id, slug]) => [slug, Number(id)]),
+);
 
 /** Nama file `.dat` default: <nama-asli>.dat (mis. "gambar.jpg" -> "gambar.jpg.dat"). */
 export function datFileName(originalName: string): string {

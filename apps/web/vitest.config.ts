@@ -2,6 +2,8 @@ import { defineConfig } from "vitest/config";
 import { resolve } from "node:path";
 
 export default defineConfig({
+  // Next memakai `jsx: preserve`; vitest perlu transform JSX sendiri.
+  esbuild: { jsx: "automatic" },
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),

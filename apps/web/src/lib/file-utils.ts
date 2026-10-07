@@ -30,8 +30,27 @@ export async function readFileBytes(file: File): Promise<Uint8Array> {
       `Ukuran file ${formatBytes(file.size)} melebihi batas ${formatBytes(MAX_FILE_SIZE)}.`,
     );
   }
-  const buffer = await file.arrayBuffer();
-  return new Uint8Array(buffer);
+  // `Blob.arrayBuffer()` belum ada di semua lingkungan (mis. jsdom).
+  // FileReader adalah fallback yang bekerja di mana-mana.
+  if (typeof file.arrayBuffer === "function") {
+    const buffer = await file.arrayBuffer();
+    return new Uint8Array(buffer);
+  }
+  return await readViaFileReader(file);
+}
+
+/** Fallback pembacaan byte lewat FileReader (dipakai kalau arrayBuffer tidak ada). */
+function readViaFileReader(file: Blob): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      if (result instanceof ArrayBuffer) resolve(new Uint8Array(result));
+      else reject(new Error("FileReader tidak mengembalikan ArrayBuffer."));
+    };
+    reader.onerror = () => reject(reader.error ?? new Error("Gagal membaca file."));
+    reader.readAsArrayBuffer(file);
+  });
 }
 
 /**

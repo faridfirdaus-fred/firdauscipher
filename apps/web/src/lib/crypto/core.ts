@@ -267,10 +267,16 @@ export function invertMatrixMod(matrix: Matrix, m: number): Matrix {
 /** Pastikan matriks persegi dan tidak kosong. */
 export function assertSquare(matrix: Matrix): void {
   const n = matrix.length;
-  if (n === 0) throw new Error("Matriks kosong");
-  for (const row of matrix) {
-    if (row.length !== n) throw new Error(`Matriks harus persegi (${n}x${n})`);
-  }
+  if (n === 0) throw new Error("Matriks kosong — isi dulu matriks kuncinya.");
+  matrix.forEach((row, i) => {
+    if (row.length !== n) {
+      throw new Error(
+        `Matriks harus persegi: baris ${i + 1} berisi ${row.length} elemen, ` +
+          `sedangkan jumlah baris ada ${n}. Tulis 2×2 atau 3×3, ` +
+          `mis. "3,3;2,5" atau "6,24,1;13,16,10;20,17,15".`,
+      );
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------

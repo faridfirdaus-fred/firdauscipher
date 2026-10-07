@@ -16,13 +16,18 @@ export function parseMatrix(text: string): Matrix {
     .split(/[;\n/]+/)
     .map((r) => r.trim())
     .filter((r) => r.length > 0);
-  const matrix = rows.map((row) =>
+  const matrix = rows.map((row, ri) =>
     row
       .split(/[\s,]+/)
       .filter((t) => t.length > 0)
-      .map((t) => {
+      .map((t, ci) => {
         const n = Number(t);
-        if (!Number.isInteger(n)) throw new Error(`Elemen matriks bukan bilangan bulat: "${t}"`);
+        if (!Number.isInteger(n)) {
+          throw new Error(
+            `Elemen matriks baris ${ri + 1} kolom ${ci + 1} bukan bilangan bulat: "${t}". ` +
+              `Isi dengan angka, mis. "3,3;2,5".`,
+          );
+        }
         return mod(n, 26);
       }),
   );
@@ -35,7 +40,11 @@ export function validateHillKey(matrix: Matrix): void {
   assertSquare(matrix);
   const n = matrix.length;
   if (n !== 2 && n !== 3) {
-    throw new Error(`Ukuran matriks Hill harus 2×2 atau 3×3 (sekarang ${n}×${n}).`);
+    const shape = matrix.map((row) => row.length).join("×");
+    throw new Error(
+      `Ukuran matriks Hill harus 2×2 atau 3×3, bukan ${shape}. ` +
+        `Contoh 2×2: "3,3;2,5". Contoh 3×3: "6,24,1;13,16,10;20,17,15".`,
+    );
   }
   const det = detMod(matrix, 26);
   if (det % 2 === 0 || det % 13 === 0) {

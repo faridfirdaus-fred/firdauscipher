@@ -43,15 +43,15 @@
 |---|---|---|---|---|
 | F0 | S01–S04 | Monorepo + OpenCode rules + skema file + test vectors | 4 | ✅ 3/4 |
 | F1 | S05 | Core crypto utils | 1 | ✅ 1/1 |
-| F2 | S06–S09 | 5 cipher 26 huruf ⭐ (a, b, d, e, f) | 4 | ⬜ 0/4 |
-| F3 | S10–S12 | Extended Vigenere, Transposisi, Super enkripsi ⭐ (c, g) | 3 | ⬜ 0/3 |
-| F4 | S13–S15 | File biner, envelope, round-trip 5 kategori ⭐ | 3 | ⬜ 0/3 |
-| F5 | S16–S18 | GUI web + validasi kunci + worker | 3 | ⬜ 0/3 |
-| F6 | S19 | ⭐ BONUS 1 — Enigma | 1 | ⬜ 0/1 |
+| F2 | S06–S09 | 5 cipher 26 huruf ⭐ (a, b, d, e, f) | 4 | ✅ 4/4 |
+| F3 | S10–S12 | Extended Vigenere, Transposisi, Super enkripsi ⭐ (c, g) | 3 | ✅ 3/3 |
+| F4 | S13–S15 | File biner, envelope, round-trip 5 kategori ⭐ | 3 | ✅ 3/3 |
+| F5 | S16–S18 | GUI web + validasi kunci + worker | 3 | ✅ 3/3 |
+| F6 | S19 | ⭐ BONUS 1 — Enigma | 1 | ✅ 1/1 |
 | F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | ⬜ 0/3 |
 | F8 | S23–S26 | 🚀 Hosting: Cloudflare Workers + Render + CI/CD | 4 | ⬜ 0/4 |
 | F9 | S27–S31 | QA, README, laporan PDF, kreativitas, paket | 5 | ⬜ 0/5 |
-| | | **TOTAL** | **31** | ✅ 4/31 |
+| | | **TOTAL** | **31** | ✅ 12/31 |
 
 **➡️ NEXT ACTION: S02** (P0)
 
@@ -354,7 +354,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 ### FASE F2 — CIPHER 26 HURUF ⭐ (spek a, b, d, e, f)
 
 #### S06 — ⭐ Vigenere standard (a) + Auto-Key (b)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: vigenere, standard, key repeat, C=(P+K)mod26, auto-key, autokey, keystream, key diikuti plaintext, dekripsi sekuensial, A=0
 - 📦 Deliverable: `encryptVigenere/decryptVigenere` + `encryptAutoKey/decryptAutoKey`
 - 📁 File: `apps/web/src/lib/crypto/vigenere.ts`, `vigenere.test.ts`
@@ -362,7 +362,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: sanitize dulu (Sp2). Key di-sanitize, key kosong → error. **Auto-key dekripsi wajib sekuensial** (plaintext yang sudah didapat jadi bagian kunci berikutnya) — sumber bug klasik.
 
 #### S07 — ⭐ Playfair Cipher (d)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: playfair, matriks 5x5, I/J digabung, digraph, filler X, rectangle swap, row shift, column shift
 - 📦 Deliverable: `encryptPlayfair` + `decryptPlayfair` + `buildKeySquare(key)`
 - 📁 File: `apps/web/src/lib/crypto/playfair.ts`, `playfair.test.ts`
@@ -370,7 +370,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan — dikunci: **I/J digabung jadi I**, filler **X**, pasangan kembar disisipkan filler, panjang ganjil tambah filler di akhir.
 
 #### S08 — ⭐ Affine Cipher (e)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: affine, E(x)=(ax+b)mod26, D(x)=a^-1(x-b)mod26, gcd(a,26)=1, validasi kunci, 12 nilai a valid
 - 📦 Deliverable: `encryptAffine` + `decryptAffine` + validator `a`
 - 📁 File: `apps/web/src/lib/crypto/affine.ts`, `affine.test.ts`
@@ -378,7 +378,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: `a` valid = {1,3,5,7,9,11,15,17,19,21,23,25}. UI menolak `a` invalid sebelum proses (dropdown).
 
 #### S09 — ⭐ Hill Cipher (f)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: hill cipher, matriks kunci nxn, determinan koprima 26, invers matriks mod 26, blok, padding X, perkalian matriks
 - 📦 Deliverable: `encryptHill` + `decryptHill` + validator matriks
 - 📁 File: `apps/web/src/lib/crypto/hill.ts`, `hill.test.ts`
@@ -390,7 +390,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 ### FASE F3 — CIPHER 256 KARAKTER + SUPER ENKRIPSI ⭐ (spek c, g)
 
 #### S10 — ⭐ Extended Vigenere (c)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: extended vigenere, 256 ascii, byte 0-255, modulo 256, Uint8Array, biner, tanpa buang karakter
 - 📦 Deliverable: `encryptExtVigenere(bytes,key)` + `decryptExtVigenere(bytes,key)`
 - 📁 File: `apps/web/src/lib/crypto/extended-vigenere.ts`, `extended-vigenere.test.ts`
@@ -398,7 +398,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: **tanpa sanitize** — semua byte termasuk 0x00, 0xFF, dan header file ikut diproses (Sp8). Output biner (`Uint8Array`), base64 hanya untuk tampilan (Sp4).
 
 #### S11 — Transposisi Kolom (bagian dari g)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: transposisi kolom, columnar transposition, urutan kolom alfabet, padding, baca baris tulis kolom
 - 📦 Deliverable: `encryptColumnar` + `decryptColumnar`
 - 📁 File: `apps/web/src/lib/crypto/columnar.ts`, `columnar.test.ts`
@@ -406,7 +406,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: operasi pada **byte** (bukan hanya alfabet) supaya bisa dipakai di super enkripsi file biner. Padding blok akhir byte 0x00 + simpan panjang asli di header envelope.
 
 #### S12 — ⭐ Super Enkripsi (g) = Extended Vigenere + Transposisi Kolom
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: super enkripsi, komposisi cipher, urutan enkripsi, dekripsi kebalikan, key ganda, dua kunci
 - 📦 Deliverable: `superEncrypt` + `superDecrypt`
 - 📁 File: `apps/web/src/lib/crypto/super-encryption.ts`, `super-encryption.test.ts`
@@ -418,7 +418,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 ### FASE F4 — FILE BINER & ENVELOPE ⭐ (spek 1, 6, 8, 9)
 
 #### S13 — Input file biner + preview + deteksi tipe
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: input file, File API, ArrayBuffer, Uint8Array, deteksi teks vs biner, preview, drag and drop, size limit
 - 📦 Deliverable: komponen input file membaca seluruh byte (termasuk header) + info file
 - 📁 File: `apps/web/src/components/FileInput.tsx`, `apps/web/src/lib/file-utils.ts`
@@ -426,7 +426,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: baca `file.arrayBuffer()` (**bukan** `file.text()`). Tampilkan hexdump 64 byte pertama sebagai bukti "header ikut terbaca".
 
 #### S14 — Envelope + tulis `.dat` + restore ekstensi saat dekripsi
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: envelope KRI1, metadata filename, download blob, restore extension, mime type, ciphertext file, save as
 - 📦 Deliverable: encrypt file → unduh `.dat`; decrypt `.dat` → unduh file dengan **nama & ekstensi asli**
 - 📁 File: `apps/web/src/lib/crypto/envelope.ts`, `apps/web/src/lib/file-utils.ts`, `apps/web/src/components/DownloadButton.tsx`
@@ -434,7 +434,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: nama file plaintext disimpan di header envelope (Sp9). Nama default `.dat` = `<nama-asli>.<ext>.dat`.
 
 #### S15 — ⭐ Matriks uji round-trip 5 kategori file (WAJIB aturan dosen R2)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: round-trip test, integritas byte, hash sha256, checksum, teks gambar database audio video, byte-identical, laporan uji
 - 📦 Deliverable: skrip/halaman uji + hasil tersimpan di `laporan/uji-file/`
 - 📁 File: `apps/web/scripts/roundtrip-test.ts`, `laporan/uji-file/*`
@@ -446,7 +446,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 ### FASE F5 — GUI WEB (spek 1, 4, 5, 6, 7, 11)
 
 #### S16 — Layout GUI + tab per cipher
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: GUI, tab, panel, form key, plaintext, ciphertext, base64, tombol encrypt decrypt save, responsif, dark mode
 - 📦 Deliverable: halaman utama dengan 8 tab (a–h) + panel input/output konsisten
 - 📁 File: `apps/web/src/app/page.tsx`, `apps/web/src/components/CipherPanel.tsx`, `apps/web/src/components/*`
@@ -454,7 +454,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: tiap tab punya: **Pilih metode (Enkripsi/Dekripsi)**, **Input mode (Teks/File)**, **Kunci**, **Plaintext/Ciphertext (textarea + tampilan base64)**, **tombol Proses**, **tombol Simpan ciphertext (.dat)**. Referensi tampilan: aes.online-domain-tools.com (disebut di soal).
 
 #### S17 — Alur teks diketik + validasi kunci per cipher
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: validasi input, pesan error, key kosong, matriks hill parse, dropdown affine a, feedback toast
 - 📦 Deliverable: validasi & pesan error ramah untuk semua cipher + state loading
 - 📁 File: `apps/web/src/components/CipherPanel.tsx`, `apps/web/src/lib/validation.ts`
@@ -462,7 +462,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: pesan error menyebut **apa** dan **kenapa** (mis. "a=4 tidak valid karena gcd(4,26)=2 ≠ 1").
 
 #### S18 — Web Worker + progress untuk file besar
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: web worker, non-blocking UI, progress bar, chunk, file besar, transferable arraybuffer
 - 📦 Deliverable: enkripsi/dekripsi file >5 MB tidak membekukan UI
 - 📁 File: `apps/web/src/workers/crypto.worker.ts`, `apps/web/src/components/CipherPanel.tsx`
@@ -474,7 +474,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 ### FASE F6 — ⭐ BONUS 1
 
 #### S19 — ⭐ Enigma Cipher (bonus h)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: enigma, rotor I V, rotor wiring, reflector B, ring setting, ringstellung, plugboard, steckerbrett, notch, stepping, double step, 3 rotor
 - 📦 Deliverable: `encryptEnigma` + `decryptEnigma` + UI tab + dokumentasi konfigurasi
 - 📁 File: `apps/web/src/lib/crypto/enigma.ts`, `enigma.test.ts`, `apps/web/src/components/CipherPanel.tsx`
@@ -706,6 +706,22 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-08 00:22 | S03 | DONE | Envelope KRI1: magic+version+cipher+hdrLen(LE)+header JSON+payload; docs/format-file.md; 17 unit test (termasuk 5 kasus error)
 2026-10-08 00:22 | S04 | DONE | Test vectors: 27 kasus (3 per cipher) dari packages/vectors/generate.py (referensi Python INDEPENDEN); 55 tes TS hijau (S22 akan pakai file yang sama di Ruby)
 2026-10-08 00:22 | S05 | DONE | core.ts: sanitize26, base64 manual (tanpa Buffer), modInverse/extended-euclid, detMod/invertMatrixMod/adjoin, padBlock; 31 unit test; 12 nilai a valid + error gcd
+2026-10-08 00:22 | S06 | DONE | vigenere.ts: encryptVigenere/decryptVigenere + encryptAutoKey/decryptAutoKey; verifikasi ATTACKATDAWN+LEMON=lxfopvefrnhr; autokey dekripsi SEKUENSIAL (plaintext jadi bagian kunci berikutnya); 11 tes
+2026-10-08 00:22 | S07 | DONE | playfair.ts: buildKeySquare 5x5 (I/J->I), digraph filler X, geser baris/kolom & rectangle swap; MONARCHY/INSTRUMENTS=gatlmzclrqxa; ciphertext selalu genap; 7 tes
+2026-10-08 00:22 | S08 | DONE | affine.ts: E(x)=(ax+b)mod26, D pakai a^-1; VALID_A 12 nilai; a=5,b=8 AFFINECIPHER=ihhwvcswfrcp; a=4 ditolak dgn pesan gcd(4,26)=2; 8 tes
+2026-10-08 00:22 | S09 | DONE | hill.ts: 2x2 & 3x3, detMod+invertMatrixMod(adjoin), padding filler X, parseMatrix; key standar ACT=poh; matriks singular ditolak dgn pesan det; 9 tes
+2026-10-08 00:22 | S10 | DONE | extended-vigenere.ts: byte 0-255 modulo 256, TANPA sanitasi; round-trip 10KB byte acak identik; byte 0x00/0xFF & header PNG ikut diproses; output Uint8Array; 7 tes
+2026-10-08 00:22 | S11 | DONE | columnar.ts: operasi pada BYTE, padding 0x00, urutan kolom sortir kunci (seri->posisi); columnOrder ZEBRAS=[4,2,1,3,5,0]; 7 tes
+2026-10-08 00:22 | S12 | DONE | super-encryption.ts: enkripsi=ExtVigenere->Kolom, dekripsi=Kolom^-1->Vigenere^-1; 2 kunci terpisah (Q2); round-trip byte acak + beda dari cipher tunggal; 6 tes
+2026-10-08 00:22 | S19 | DONE | enigma.ts: Enigma I 3 rotor (I-V), reflector A/B/C, ring setting, posisi awal, plugboard opsional; double-stepping diuji eksplisit (AEA->BFB); AAAAA=bdzgo; 11 tes
+2026-10-08 00:43 | S13 | DONE | file-utils.ts: readFileBytes pakai arrayBuffer (+fallback FileReader utk jsdom), looksLikeText (NUL/>10% non-printable), hexPreview 64 byte, MAX_FILE_SIZE 100MB, sha256Hex; 10 unit test
+2026-10-08 00:43 | S14 | DONE | envelope KRI1 utk file: enkripsi -> `<nama>.<ext>.dat`, dekripsi memulihkan nama+ekstensi dari header (Sp9) & memangkas padding pakai size; tombol "Simpan .dat" juga di mode TEKS (Sp6)
+2026-10-08 00:43 | S15 | DONE | scripts/roundtrip-test.ts: 5 kategori (teks/gambar/database/audio/video) x 4 cipher biner = 15/15 byte-identik; cipher 26 huruf 0/5 (sesuai Sp2); hasil di laporan/uji-file/roundtrip.{json,md}
+2026-10-08 00:43 | S16 | DONE | page.tsx + cipher-selector + mode-panel (tab Teks/File) + key-fields otomatis dari registry; 8 cipher a-h bisa dipilih; page.test.tsx membuktikan tidak ada console.error; `next build` sukses
+2026-10-08 00:43 | S17 | DONE | pesan error menyebut sebab: gcd(a,26), det matriks, bentuk matriks (assertSquare dulu melaporkan "2x2" utk matriks 2 baris yg kolomnya tak sama -> kini sebut baris & jumlah elemennya), elemen bukan angka + nomor baris/kolom, kunci tanpa huruf A-Z; 31 tes validation.test.ts
+2026-10-08 00:43 | S18 | DONE | worker-client.ts (ambang 64KB, fallback main thread) + cipher.worker.ts + use-cipher-worker; 8 tes worker-client.test.ts (ambang, transferable, progress, error, terminate)
+2026-10-08 00:43 | FIX  | DONE | Transposisi Kolom (g) satu-satunya field kunci tanpa defaultValue -> form error saat dipakai langsung; kini default "ZEBRAS". Header hasil file juga menampilkan Parameter kunci (bukti Sp9)
+2026-10-08 00:43 | FIX  | DONE | Pesan validasi kunci terbaca "Kunci Kunci untuk Vigenere" (label diteruskan ganda) -> kini 'Kunci "key" untuk Vigenere ...'; tes menolak regresi ini
 ```
 
 ---
@@ -730,3 +746,4 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 16. **OpenCode**: `AGENTS.md` di root terbaca otomatis; `opencode.json` `instructions` untuk file tambahan. Kalau ada `CLAUDE.md` dan `AGENTS.md` bersamaan, **hanya `AGENTS.md`** yang dipakai → jangan taruh aturan hanya di `CLAUDE.md`.
 17. **`docs/PLAN.md`**: pakai **symlink** ke file TODO ini, jangan copy → supaya tidak ada dua versi yang beda.
 18. **Nama paket pnpm wajib lowercase** → `firdauscipher-web` / `firdauscipher-api` (bukan camelCase), sedangkan nama tampilan produk tetap `FirdausCipher`.
+19. **Jangan jalankan `pnpm build` dan `pnpm dev` bersamaan** — keduanya memakai folder `.next` yang sama, sehingga build menghapus `.next/static/development/_buildManifest.js` milik dev server dan halaman jadi **HTTP 500** (error `ENOENT ... _buildManifest.js.tmp.*`). Hentikan dev dulu, atau `rm -rf .next` lalu jalankan ulang dev. Ini bukan bug kode.
