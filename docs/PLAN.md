@@ -48,12 +48,18 @@
 | F4 | S13–S15 | File biner, envelope, round-trip 5 kategori ⭐ | 3 | ✅ 3/3 |
 | F5 | S16–S18 | GUI web + validasi kunci + worker | 3 | ✅ 3/3 |
 | F6 | S19 | ⭐ BONUS 1 — Enigma | 1 | ✅ 1/1 |
-| F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | ⬜ 0/3 |
+| F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | 🟨 1/3 |
 | F8 | S23–S26 | 🚀 Hosting: Cloudflare Workers + Render + CI/CD | 4 | ⬜ 0/4 |
 | F9 | S27–S31 | QA, README, laporan PDF, kreativitas, paket | 5 | ⬜ 0/5 |
-| | | **TOTAL** | **31** | ✅ 12/31 |
+| | | **TOTAL** | **31** | ✅ 19/31 |
 
-**➡️ NEXT ACTION: S02** (P0)
+**➡️ NEXT ACTION: S02** (P0) — *terhambat izin*
+
+> `AGENTS.md` **root** sudah ditulis (commit `ca7ff00`) dan terbaca otomatis lewat
+> `opencode.json`. Yang belum: `apps/web/AGENTS.md` + `apps/api/AGENTS.md`.
+> Keduanya adalah file instruksi agent yang dilindungi — penulisannya butuh
+> persetujuan manual di prompt izin (sudah 3× timeout). Sementara itu, S21 sudah
+> bisa dikerjakan karena tidak bergantung pada S02.
 
 ---
 
