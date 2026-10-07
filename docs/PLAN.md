@@ -486,7 +486,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 ### FASE F7 — ⭐ BONUS 2 (RUBY = BACKEND SERVICE)
 
 #### S20 — Setup proyek Ruby + port core
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: ruby 3.3.8, sinatra, bundler, gemfile, puma, rack, rack-cors, port core, modinverse ruby, matrix ruby, test vectors json, firdauscipher-api
 - 📦 Deliverable: `apps/api` jalan + core utils port lengkap
 - 📁 File: `apps/api/Gemfile`, `apps/api/.ruby-version`, `apps/api/app.rb`, `apps/api/lib/firdaus_cipher/core.rb`, `apps/api/spec/core_spec.rb`
@@ -722,6 +722,8 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-08 00:43 | S18 | DONE | worker-client.ts (ambang 64KB, fallback main thread) + cipher.worker.ts + use-cipher-worker; 8 tes worker-client.test.ts (ambang, transferable, progress, error, terminate)
 2026-10-08 00:43 | FIX  | DONE | Transposisi Kolom (g) satu-satunya field kunci tanpa defaultValue -> form error saat dipakai langsung; kini default "ZEBRAS". Header hasil file juga menampilkan Parameter kunci (bukti Sp9)
 2026-10-08 00:43 | FIX  | DONE | Pesan validasi kunci terbaca "Kunci Kunci untuk Vigenere" (label diteruskan ganda) -> kini 'Kunci "key" untuk Vigenere ...'; tes menolak regresi ini
+2026-10-08 06:30 | S02 | PART | AGENTS.md root ditulis (10 aturan wajib, perintah standar, Sp1-Sp11, daftar cipher); apps/web & apps/api/AGENTS.md belum (penulisan file instruksi agent diblokir izin)
+2026-10-08 06:30 | S20 | DONE | apps/api/lib/firdaus_cipher/core.rb: port lengkap core utils (sanitize26, char/num, mod, modInverse, base64 manual, latin1/utf8/hex, gcd, det/matMul/transpose/cofactor/invert, assertSquare, padBlock); 34 spec lolos; server `/health` -> 200 (webrick lokal, puma grup production); `bundle lock --add-platform x86_64-linux` utk Render; paritas TS<->Ruby diuji 88 kasus IDENTIK + base64 vs referensi Python 45/45
 ```
 
 ---

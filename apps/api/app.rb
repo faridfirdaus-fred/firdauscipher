@@ -3,9 +3,12 @@
 require "sinatra/base"
 require "json"
 
+require_relative "lib/firdaus_cipher/core"
+
 # FirdausCipher API — implementasi Ruby (Bonus 2).
 #
 # S01: skeleton + /health + /api/ciphers (daftar masih kosong).
+# S20: port core utils ke Ruby (lib/firdaus_cipher/core.rb) + spec-nya.
 # S21: rute cipher sesungguhnya (a–h) + GUI mini.
 module FirdausCipher
   class App < Sinatra::Base
