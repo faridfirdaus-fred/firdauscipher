@@ -1,0 +1,21 @@
+{
+  "name": "firdauscipher",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FirdausCipher — web GUI untuk cipher klasik (Vigenere, Playfair, Affine, Hill, Extended Vigenere, Super Enkripsi, Enigma)",
+  "packageManager": "pnpm@12.4.2",
+  "scripts": {
+    "dev": "pnpm --filter firdauscipher-web dev",
+    "build": "pnpm --filter firdauscipher-web build",
+    "start": "pnpm --filter firdauscipher-web start",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm --filter firdauscipher-web typecheck",
+    "api": "cd apps/api && bundle exec ruby bin/server",
+    "api:test": "cd apps/api && bundle exec rspec",
+    "verify": "pnpm typecheck && pnpm test && pnpm api:test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

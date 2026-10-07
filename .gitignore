@@ -1,0 +1,49 @@
+# ---- Node / JS ----
+node_modules/
+.pnpm-store/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# ---- Env & secret ----
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ---- Ruby ----
+# CATATAN: pola berisi "/" bersifat anchored ke root .gitignore,
+# jadi harus pakai "**/" supaya vendor/bundle di apps/api ikut ter-ignore.
+**/vendor/bundle/
+**/.bundle/
+*.gem
+Gemfile.lock.bak
+
+# ---- Test & coverage ----
+coverage/
+.nyc_output/
+
+# ---- Editor / OS ----
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~
+
+# ---- Cloudflare / Wrangler ----
+.wrangler/
+.dev.vars
+
+# ---- Build artifact tugas (jangan pernah di-commit) ----
+laporan/*.zip
+laporan/*.pdf
+*.dat
+
+# ---- Log ----
+*.log
+npm-debug.log*
+pnpm-debug.log*

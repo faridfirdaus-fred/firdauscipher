@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json.schemastore.org/vectors-placeholder.json",
+  "_comment": "Diisi pada S04. Struktur tiap kasus: { id, cipher, mode, key, plaintext, ciphertext, note }",
+  "version": 1,
+  "vectors": []
+}

@@ -1,0 +1,9 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# pnpm 10+ memblokir postinstall script secara default.
+# Ini hanya build tool yang memang perlu dijalankan.
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true

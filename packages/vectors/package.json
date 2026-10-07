@@ -1,0 +1,8 @@
+{
+  "name": "@firdauscipher/vectors",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Test vectors bersama untuk implementasi TypeScript dan Ruby (satu sumber kebenaran)",
+  "main": "vectors.json",
+  "files": ["vectors.json"]
+}

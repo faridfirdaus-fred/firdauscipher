@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Jalankan FirdausCipher API secara lokal.
+#
+#   bundle exec ruby bin/server            # port 9292
+#   PORT=3000 bundle exec ruby bin/server  # port lain
+#
+# Pakai webrick (murni Ruby) supaya tidak butuh compiler di mesin lokal.
+# Di Render, server dijalankan lewat puma (lihat render.yaml, S24).
+
+require "rack"
+require "rackup"
+require "webrick"
+
+require_relative "../app"
+
+port = Integer(ENV.fetch("PORT", 9292))
+host = ENV.fetch("HOST", "127.0.0.1")
+
+Rackup::Handler::WEBrick.run(
+  FirdausCipher::App,
+  Host: host,
+  Port: port,
+  AccessLog: [],
+  Logger: WEBrick::Log.new($stderr, WEBrick::Log::WARN)
+)

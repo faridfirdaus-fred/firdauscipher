@@ -1,0 +1,34 @@
+source "https://rubygems.org"
+
+ruby "3.3.8"
+
+# --- Core framework -----------------------------------------------------------
+gem "sinatra", "~> 4.1"
+gem "rackup", "~> 2.2"
+gem "rack-cors", "~> 2.0"
+
+# NB: `json` sengaja TIDAK dideklarasikan di sini.
+# Ruby 3.3.8 sudah menyertakan json 2.7.2 sebagai default gem, dan versi
+# json terbaru butuh compiler (ruby-dev) yang belum terpasang di mesin lokal.
+
+# Server lokal: webrick murni Ruby, tidak butuh compiler.
+gem "webrick", "~> 1.9"
+
+# --- Test ---------------------------------------------------------------------
+group :development, :test do
+  gem "rspec", "~> 3.13"
+  gem "rack-test", "~> 2.1"
+end
+
+# --- Produksi (Render) --------------------------------------------------------
+# puma butuh ruby-dev/headers. Di lokal kita skip grup ini
+# (bundle config set --local without "production lint"), lalu jalankan webrick.
+group :production do
+  gem "puma", "~> 6.4"
+end
+
+# --- Lint ---------------------------------------------------------------------
+# rubocop -> prism (native extension), juga butuh ruby-dev. Skip di lokal.
+group :lint do
+  gem "rubocop", "~> 1.66", require: false
+end
