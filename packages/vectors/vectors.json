@@ -1,6 +1,410 @@
 {
-  "$schema": "https://json.schemastore.org/vectors-placeholder.json",
-  "_comment": "Diisi pada S04. Struktur tiap kasus: { id, cipher, mode, key, plaintext, ciphertext, note }",
-  "version": 1,
-  "vectors": []
+  "version": 2,
+  "generated": "2026-10-08",
+  "generator": "packages/vectors/generate.py (implementasi referensi Python, independen dari TS/Ruby)",
+  "schema": {
+    "id": "string unik",
+    "cipher": "vigenere|autokey|ext-vigenere|playfair|affine|hill|columnar|super|enigma",
+    "mode": "text (cipher 26 huruf) | binary (byte)",
+    "params": "objek parameter kunci (lihat cipher)",
+    "plaintext": "string (mode text) atau base64 (mode binary)",
+    "ciphertext": "string huruf kecil (mode text) atau base64 (mode binary)",
+    "note": "penjelasan kasus",
+    "source": "rujukan buku / self-generated"
+  },
+  "cases": [
+    {
+      "id": "vigenere-1",
+      "cipher": "vigenere",
+      "mode": "text",
+      "params": {
+        "key": "LEMON"
+      },
+      "plaintext": "ATTACKATDAWN",
+      "ciphertext": "lxfopvefrnhr",
+      "note": "Vigenere standard, kunci 'LEMON'",
+      "source": "Buku klasik (Vigenere LEMON)"
+    },
+    {
+      "id": "vigenere-2",
+      "cipher": "vigenere",
+      "mode": "text",
+      "params": {
+        "key": "QUEENLY"
+      },
+      "plaintext": "ATTACKATDAWN",
+      "ciphertext": "qnxepvyjxeaa",
+      "note": "Vigenere standard, kunci 'QUEENLY'",
+      "source": "self-generated (kunci lebih panjang)"
+    },
+    {
+      "id": "vigenere-3",
+      "cipher": "vigenere",
+      "mode": "text",
+      "params": {
+        "key": "RAHASIA"
+      },
+      "plaintext": "KRIPTOGRAFIADALAHILMUTENTANGMENYEMBUNYIKANPESAN",
+      "ciphertext": "brpplwgiamislacaoiduukeutsvgdeuywublnficingezaf",
+      "note": "Vigenere standard, kunci 'RAHASIA'",
+      "source": "self-generated"
+    },
+    {
+      "id": "autokey-1",
+      "cipher": "autokey",
+      "mode": "text",
+      "params": {
+        "key": "QUEENLY"
+      },
+      "plaintext": "ATTACKATDAWN",
+      "ciphertext": "qnxepvytwtwp",
+      "note": "Auto-Key Vigenere, kunci 'QUEENLY'",
+      "source": "Buku klasik (autokey QUEENLY)"
+    },
+    {
+      "id": "autokey-2",
+      "cipher": "autokey",
+      "mode": "text",
+      "params": {
+        "key": "LEMON"
+      },
+      "plaintext": "ATTACKATDAWN",
+      "ciphertext": "lxfopktmdcgn",
+      "note": "Auto-Key Vigenere, kunci 'LEMON'",
+      "source": "self-generated"
+    },
+    {
+      "id": "autokey-3",
+      "cipher": "autokey",
+      "mode": "text",
+      "params": {
+        "key": "KUNCI"
+      },
+      "plaintext": "SERANGSUBUHSEKALI",
+      "ciphertext": "cyecvywlbhnkylusa",
+      "note": "Auto-Key Vigenere, kunci 'KUNCI'",
+      "source": "self-generated"
+    },
+    {
+      "id": "ext-vigenere-1",
+      "cipher": "ext-vigenere",
+      "mode": "binary",
+      "params": {
+        "key": "kunci"
+      },
+      "plaintext": "RmlyZGF1c0NpcGhlciBFeHRlbmRlZCBWaWdlbmVyZSAyNTYgQVNDSUk=",
+      "ciphertext": "sd7gx8rg6LHM2dPa4IOu4+nT0c3Q2Y650tLa3Mjb0JWgmJ+LtsGmsrQ=",
+      "note": "Extended Vigenere 256 ASCII — teks ASCII",
+      "source": "self-generated"
+    },
+    {
+      "id": "ext-vigenere-2",
+      "cipher": "ext-vigenere",
+      "mode": "binary",
+      "params": {
+        "key": "K"
+      },
+      "plaintext": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==",
+      "ciphertext": "S0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/wABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSg==",
+      "note": "Extended Vigenere 256 ASCII — semua byte 0-255 (termasuk 0x00 & 0xFF)",
+      "source": "self-generated"
+    },
+    {
+      "id": "ext-vigenere-3",
+      "cipher": "ext-vigenere",
+      "mode": "binary",
+      "params": {
+        "key": "rahasia"
+      },
+      "plaintext": "ft8s9Yr7GHFW18St4nMwqS7PXGU660jhBsf0HZJjYBnev4zV6tt4Uba3JI1CU5CJjq+8RZrLqMFmp1T98kPA+Q==",
+      "ciphertext": "8ECUVv1keeO3PyUgS9SiCpYwz86bXalJZzpdfgTEyHpRKO1HS0PZxB8Ylu6qtAPy7yEdrfs+ESLYCLxeZawhaw==",
+      "note": "Extended Vigenere 256 ASCII — byte acak deterministik 64 byte",
+      "source": "self-generated"
+    },
+    {
+      "id": "playfair-1",
+      "cipher": "playfair",
+      "mode": "text",
+      "params": {
+        "key": "MONARCHY"
+      },
+      "plaintext": "INSTRUMENTS",
+      "ciphertext": "gatlmzclrqxa",
+      "note": "Playfair 5x5 (I/J gabung, filler X), kunci 'MONARCHY'",
+      "source": "Buku klasik (MONARCHY/INSTRUMENTS)"
+    },
+    {
+      "id": "playfair-2",
+      "cipher": "playfair",
+      "mode": "text",
+      "params": {
+        "key": "MONARCHY"
+      },
+      "plaintext": "ATTACKATDAWN",
+      "ciphertext": "rssrdersbrny",
+      "note": "Playfair 5x5 (I/J gabung, filler X), kunci 'MONARCHY'",
+      "source": "self-generated"
+    },
+    {
+      "id": "playfair-3",
+      "cipher": "playfair",
+      "mode": "text",
+      "params": {
+        "key": "MONARCHY"
+      },
+      "plaintext": "BALLOON",
+      "ciphertext": "ibsupmna",
+      "note": "Playfair 5x5 (I/J gabung, filler X), kunci 'MONARCHY'",
+      "source": "self-generated (pasangan kembar -> filler X)"
+    },
+    {
+      "id": "affine-1",
+      "cipher": "affine",
+      "mode": "text",
+      "params": {
+        "a": 5,
+        "b": 8
+      },
+      "plaintext": "AFFINECIPHER",
+      "ciphertext": "ihhwvcswfrcp",
+      "note": "Affine a=5 b=8",
+      "source": "Buku klasik (a=5, b=8)"
+    },
+    {
+      "id": "affine-2",
+      "cipher": "affine",
+      "mode": "text",
+      "params": {
+        "a": 7,
+        "b": 3
+      },
+      "plaintext": "KRIPTOGRAFI",
+      "ciphertext": "vshegxtsdmh",
+      "note": "Affine a=7 b=3",
+      "source": "self-generated"
+    },
+    {
+      "id": "affine-3",
+      "cipher": "affine",
+      "mode": "text",
+      "params": {
+        "a": 11,
+        "b": 15
+      },
+      "plaintext": "HELLO WORLD",
+      "ciphertext": "ohggnxnugw",
+      "note": "Affine a=11 b=15",
+      "source": "self-generated (spasi dibuang)"
+    },
+    {
+      "id": "hill-1",
+      "cipher": "hill",
+      "mode": "text",
+      "params": {
+        "matrix": [
+          [
+            6,
+            24,
+            1
+          ],
+          [
+            13,
+            16,
+            10
+          ],
+          [
+            20,
+            17,
+            15
+          ]
+        ]
+      },
+      "plaintext": "ACT",
+      "ciphertext": "poh",
+      "note": "Hill 3x3, padding filler X",
+      "source": "Buku klasik (Hill 3x3 standar)"
+    },
+    {
+      "id": "hill-2",
+      "cipher": "hill",
+      "mode": "text",
+      "params": {
+        "matrix": [
+          [
+            6,
+            24,
+            1
+          ],
+          [
+            13,
+            16,
+            10
+          ],
+          [
+            20,
+            17,
+            15
+          ]
+        ]
+      },
+      "plaintext": "ATTACKATDAWN",
+      "ciphertext": "hakgccrwevox",
+      "note": "Hill 3x3, padding filler X",
+      "source": "self-generated"
+    },
+    {
+      "id": "hill-3",
+      "cipher": "hill",
+      "mode": "text",
+      "params": {
+        "matrix": [
+          [
+            3,
+            3
+          ],
+          [
+            2,
+            5
+          ]
+        ]
+      },
+      "plaintext": "HELP",
+      "ciphertext": "hiat",
+      "note": "Hill 2x2, padding filler X",
+      "source": "self-generated (Hill 2x2)"
+    },
+    {
+      "id": "columnar-1",
+      "cipher": "columnar",
+      "mode": "binary",
+      "params": {
+        "key": "ZEBRAS"
+      },
+      "plaintext": "V0VBUkVESVNDT1ZFUkVERkxFRUFUT05DRQ==",
+      "ciphertext": "RVZMTgBBQ0RUAEVTRUEAUk9GTwBERUVDAFdJUkVF",
+      "note": "Transposisi kolom (byte), kunci 'ZEBRAS' — contoh klasik (25 byte -> 30 byte berpadding)",
+      "source": "self-generated"
+    },
+    {
+      "id": "columnar-2",
+      "cipher": "columnar",
+      "mode": "binary",
+      "params": {
+        "key": "KUNCI"
+      },
+      "plaintext": "RklSREFVU0NJUEhFUg==",
+      "ciphertext": "REkAQVAARlVIUkNSSVNF",
+      "note": "Transposisi kolom (byte), kunci 'KUNCI' — self-generated",
+      "source": "self-generated"
+    },
+    {
+      "id": "columnar-3",
+      "cipher": "columnar",
+      "mode": "binary",
+      "params": {
+        "key": "RAHASIA"
+      },
+      "plaintext": "NF3So6BZHv/MFSobuJH292TNgpPQyc7v/IXaC+gBpueUPTKDADl+3w==",
+      "ciphertext": "Xcz3zgEAoyrN/Od+HpHQCzIA0hVk76Y5WbiT2j0ANP/2yeiDoBuChZTf",
+      "note": "Transposisi kolom (byte), kunci 'RAHASIA' — byte acak deterministik",
+      "source": "self-generated"
+    },
+    {
+      "id": "super-1",
+      "cipher": "super",
+      "mode": "binary",
+      "params": {
+        "key1": "kunci1",
+        "key2": "ZEBRAS"
+      },
+      "plaintext": "RmlyZGF1c0NpcGhlciBzdXBlciBlbmtyaXBzaQ==",
+      "ciphertext": "ytHZ1ADg1+HT4d64lZXlx9PY0cymlpajALHe3d3U",
+      "note": "Super enkripsi = Extended Vigenere('kunci1') lalu Transposisi Kolom('ZEBRAS') — teks ASCII",
+      "source": "self-generated"
+    },
+    {
+      "id": "super-2",
+      "cipher": "super",
+      "mode": "binary",
+      "params": {
+        "key1": "K1",
+        "key2": "KUNCI2"
+      },
+      "plaintext": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==",
+      "ciphertext": "NjxCSE5UWmBmbHJ4foSKkJacoqiutLrAxszS2N7k6vD2/AIIDhQaICYsADQ6QEZMUlheZGpwdnyCiI6UmqCmrLK4vsTK0Nbc4uju9PoABgwSGB4kKjBPVVthZ21zeX+Fi5GXnaOpr7W7wcfN09nf5evx9/0DCQ8VGyEnLTM5P0UAS1FXXWNpb3V7gYeNk5mfpauxt73Dyc/V2+Hn7fP5/wULERcdIykvNTtBR01TWV9la3F3fYOJj5Wboaets7m/xcvR193j6e/1+wEHDRMZHyUrMTc9Q0kyOD5ESlBWXGJobnR6gIaMkpiepKqwtrzCyM7U2uDm7PL4/gQKEBYcIigu",
+      "note": "Super enkripsi = Extended Vigenere('K1') lalu Transposisi Kolom('KUNCI2') — semua byte 0-255",
+      "source": "self-generated"
+    },
+    {
+      "id": "super-3",
+      "cipher": "super",
+      "mode": "binary",
+      "params": {
+        "key1": "alpha",
+        "key2": "BETA"
+      },
+      "plaintext": "YBnev4zV6tt4Uba3JI1CU5CJjq+8RZrLqMFmp1T98kPA+T6f7LVKu9gxFpeEbaIz8Gnujxwl+qsIocaHtN1SIyDZnn9MlaqbOBF2d+RNAhNQSU5vfAVai2iBJmcUvbIDgLn+Xw==",
+      "ciphertext": "J0sjtBAzF68AHP+j+wzoi+8H2HTX+9NkwMHt4JT8HQm8MFg55ViMdBWBtKhQsd3QhOyFNrL1+bEiXmElnc7KjRFJOvZ5vbVm4iUpTlYXo/YK0lOfsoYOT1suwgoL12q+xocTZg==",
+      "note": "Super enkripsi = Extended Vigenere('alpha') lalu Transposisi Kolom('BETA') — byte acak deterministik",
+      "source": "self-generated"
+    },
+    {
+      "id": "enigma-1",
+      "cipher": "enigma",
+      "mode": "text",
+      "params": {
+        "rotors": [
+          "I",
+          "II",
+          "III"
+        ],
+        "reflector": "B",
+        "ring": "AAA",
+        "position": "AAA"
+      },
+      "plaintext": "AAAAA",
+      "ciphertext": "bdzgo",
+      "note": "Enigma I, 3 rotor, double-stepping benar",
+      "source": "Vektor Enigma terkenal (rotor I-II-III, reflector B, AAA/AAA)"
+    },
+    {
+      "id": "enigma-2",
+      "cipher": "enigma",
+      "mode": "text",
+      "params": {
+        "rotors": [
+          "I",
+          "II",
+          "III"
+        ],
+        "reflector": "B",
+        "ring": "AAA",
+        "position": "AAA"
+      },
+      "plaintext": "KRIPTOGRAFI",
+      "ciphertext": "wcgxxkztlqb",
+      "note": "Enigma I, 3 rotor, double-stepping benar",
+      "source": "self-generated"
+    },
+    {
+      "id": "enigma-3",
+      "cipher": "enigma",
+      "mode": "text",
+      "params": {
+        "rotors": [
+          "IV",
+          "V",
+          "I"
+        ],
+        "reflector": "C",
+        "ring": "XYZ",
+        "position": "QWE",
+        "plugboard": "AB CD"
+      },
+      "plaintext": "HELLOENIGMA",
+      "ciphertext": "zoshbhrbfzq",
+      "note": "Enigma I, 3 rotor, double-stepping benar",
+      "source": "self-generated (rotor IV-V-I, reflector C, ring XYZ, plugboard AB CD)"
+    }
+  ]
 }

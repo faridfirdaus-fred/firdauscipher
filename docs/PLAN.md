@@ -41,8 +41,8 @@
 
 | Fase | Step | Isi | Jumlah | Status |
 |---|---|---|---|---|
-| F0 | S01–S04 | Monorepo + OpenCode rules + skema file + test vectors | 4 | ✅ 1/4 |
-| F1 | S05 | Core crypto utils | 1 | ⬜ 0/1 |
+| F0 | S01–S04 | Monorepo + OpenCode rules + skema file + test vectors | 4 | ✅ 3/4 |
+| F1 | S05 | Core crypto utils | 1 | ✅ 1/1 |
 | F2 | S06–S09 | 5 cipher 26 huruf ⭐ (a, b, d, e, f) | 4 | ⬜ 0/4 |
 | F3 | S10–S12 | Extended Vigenere, Transposisi, Super enkripsi ⭐ (c, g) | 3 | ⬜ 0/3 |
 | F4 | S13–S15 | File biner, envelope, round-trip 5 kategori ⭐ | 3 | ⬜ 0/3 |
@@ -51,7 +51,7 @@
 | F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | ⬜ 0/3 |
 | F8 | S23–S26 | 🚀 Hosting: Cloudflare Workers + Render + CI/CD | 4 | ⬜ 0/4 |
 | F9 | S27–S31 | QA, README, laporan PDF, kreativitas, paket | 5 | ⬜ 0/5 |
-| | | **TOTAL** | **31** | ✅ 1/31 |
+| | | **TOTAL** | **31** | ✅ 4/31 |
 
 **➡️ NEXT ACTION: S02** (P0)
 
@@ -305,7 +305,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
   - `docs/PLAN.md` = **symlink** ke file TODO ini (bukan copy) supaya tidak ada dua versi yang beda.
 
 #### S03 — Bekukan skema envelope file `.dat` + konvensi global
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: envelope, magic bytes KRI1, header json, metadata filename, ekstensi asli, offset, little endian, binary format, restore extension
 - 📦 Deliverable: `apps/web/src/lib/crypto/envelope.ts` (pack/unpack) + `docs/format-file.md`
 - 📁 File: `apps/web/src/lib/crypto/envelope.ts`, `docs/format-file.md`
@@ -325,7 +325,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
   - `mode`: `"binary"` (byte mentah) atau `"base64-text"` (cipher 26-huruf yang membuang non-alfabet).
 
 #### S04 — Test vectors bersama (JSON)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: test vectors, known answer test, KAT, cross-language, json fixture, expected ciphertext, packages/vectors
 - 📦 Deliverable: `packages/vectors/vectors.json` ≥3 kasus per cipher (plaintext, key, ciphertext, arah, catatan)
 - 📁 File: `packages/vectors/vectors.json`, `packages/vectors/package.json`
@@ -337,7 +337,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 ### FASE F1 — CORE ENGINE
 
 #### S05 — `lib/crypto/core.ts` (utils bersama)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE
 - 🔑 Kata kunci: alphabet 26, strip non-alpha, uppercase, base64 encode/decode, modInverse, extended euclid, matriks determinan, invers matriks mod 26, adjoin, block padding, filler X, byte latin1
 - 📦 Deliverable: fungsi murni + unit test lengkap
 - 📁 File: `apps/web/src/lib/crypto/core.ts`, `apps/web/src/lib/crypto/core.test.ts`
@@ -703,6 +703,9 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-07 21:3x | —   | DRAFT  | TODO v3: nama final → FirdausCipher; perbaiki penomoran step (31 step) & semua cross-reference (R1–R4, peta file, §3)
 2026-10-07 23:46 | —   | DRAFT  | TODO v4: deadline 9 Okt 2026, tim = sendiri, lokasi monorepo dikonfirmasi, tambah §1.1 jadwal & prioritas P0–P4, hapus draft v1
 2026-10-08 00:10 | S01 | DONE | Scaffold monorepo (pnpm workspaces) + Next.js 15 apps/web + Sinatra apps/api + packages/vectors; verifikasi: pnpm verify hijau, dev server 200, /health 200, rspec 2/2
+2026-10-08 00:22 | S03 | DONE | Envelope KRI1: magic+version+cipher+hdrLen(LE)+header JSON+payload; docs/format-file.md; 17 unit test (termasuk 5 kasus error)
+2026-10-08 00:22 | S04 | DONE | Test vectors: 27 kasus (3 per cipher) dari packages/vectors/generate.py (referensi Python INDEPENDEN); 55 tes TS hijau (S22 akan pakai file yang sama di Ruby)
+2026-10-08 00:22 | S05 | DONE | core.ts: sanitize26, base64 manual (tanpa Buffer), modInverse/extended-euclid, detMod/invertMatrixMod/adjoin, padBlock; 31 unit test; 12 nilai a valid + error gcd
 ```
 
 ---
