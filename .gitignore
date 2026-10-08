@@ -26,6 +26,13 @@ Gemfile.lock.bak
 coverage/
 .nyc_output/
 
+# ---- Aturan agen (lokal saja, TIDAK di-commit) ----
+# AGENTS.md = instruksi kerja untuk coding agent (OpenCode). Isinya spesifik
+# mesin lokal + referensi path absolut, jadi tidak ikut repo publik.
+# Di-commit ke git hanya akan membingungkan pembaca repo.
+AGENTS.md
+**/AGENTS.md
+
 # ---- Editor / OS ----
 .DS_Store
 .idea/
