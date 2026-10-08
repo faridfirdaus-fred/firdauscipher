@@ -45,11 +45,10 @@ AGENTS.md
 .wrangler/
 .dev.vars
 
-# ---- Build artifact tugas (jangan pernah di-commit) ----
-laporan/*.zip
-laporan/*.pdf
-# hasil build-laporan.py (gambar base64) — dihasilkan ulang, tidak perlu di-commit
-laporan/laporan-uts-kriptografi.html
+# ---- Laporan proyek (tidak disertakan di repositori) ----
+# Folder laporan/ dihasilkan ulang oleh skrip (pnpm cross-verify / roundtrip /
+# screenshots) dan laporan dikumpulkan terpisah di luar repo.
+laporan/
 *.dat
 
 # ---- Log ----

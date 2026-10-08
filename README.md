@@ -23,7 +23,7 @@ pembuktian silang hasil antar-bahasa pemrograman.
 - [Demo cepat (satu perintah)](#demo-cepat-satu-perintah)
 - [Cara memakai aplikasi](#cara-memakai-aplikasi)
 - [Menjalankan pengujian](#menjalankan-pengujian)
-- [Bukti & laporan](#bukti--laporan)
+- [Bukti & pengujian](#bukti--pengujian)
 - [Struktur repositori](#struktur-repositori)
 - [Pemecahan masalah](#pemecahan-masalah)
 
@@ -315,14 +315,21 @@ pnpm screenshots    # ambil screenshot antarmuka (butuh dev server hidup)
 
 ---
 
-## Bukti & laporan
+## Bukti & pengujian
+
+Semua bukti **dihasilkan ulang oleh skrip** di repositori ini, jadi tidak disertakan
+sebagai berkas di repo:
+
+| Bukti | Cara menghasilkan |
+|---|---|
+| Tabel bukti cross-verify TS↔Ruby | `cd apps/web && pnpm cross-verify` → `laporan/uji/` |
+| Hasil uji file 5 kategori | `cd apps/web && pnpm roundtrip` → `laporan/uji-file/` |
+| Screenshot antarmuka | `cd apps/web && pnpm screenshots` → `laporan/screenshot/` |
+
+Dokumentasi pendukung yang ikut repo:
 
 | Isi | Lokasi |
 |---|---|
-| Laporan UTS (PDF) | `laporan/laporan-uts-kriptografi.pdf` *(disusun pada langkah S29)* |
-| Screenshot antarmuka (R1) | `laporan/screenshot/ui-*.png`, `file-*.png` |
-| Tabel bukti cross-verify TS↔Ruby | `laporan/uji/cross-verify.md` |
-| Hasil uji file 5 kategori (R2) | `laporan/uji-file/roundtrip.json` |
 | Rencana kerja & log progres | `docs/PLAN.md` |
 | Spesifikasi format `.dat` | `docs/format-file.md` |
 
@@ -346,7 +353,7 @@ firdauscipher/
 │   ├── vectors/             vectors.json (27 kasus) + generate.py (acuan)
 │   └── testfiles/           contoh.txt/.png/.sqlite/.wav/.mp4
 ├── docs/                    PLAN.md, format-file.md
-└── laporan/                 laporan PDF, screenshot, bukti uji
+└── laporan/                 hasil skrip bukti uji (tidak di-commit)
 ```
 
 ---
