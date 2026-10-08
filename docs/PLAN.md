@@ -48,12 +48,12 @@
 | F4 | S13–S15 | File biner, envelope, round-trip 5 kategori ⭐ | 3 | ✅ 3/3 |
 | F5 | S16–S18 | GUI web + validasi kunci + worker | 3 | ✅ 3/3 |
 | F6 | S19 | ⭐ BONUS 1 — Enigma | 1 | ✅ 1/1 |
-| F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | 🟨 2/3 |
+| F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | ✅ 3/3 |
 | F8 | S23–S26 | 🚀 Hosting: Cloudflare Workers + Render + CI/CD | 4 | ⬜ 0/4 |
 | F9 | S27–S31 | QA, README, laporan PDF, kreativitas, paket | 5 | ⬜ 0/5 |
-| | | **TOTAL** | **31** | ✅ 20/31 |
+| | | **TOTAL** | **31** | ✅ 21/31 |
 
-**➡️ NEXT ACTION: S22** (P2) — skrip cross-verify permanen + tabel laporan
+**➡️ NEXT ACTION: S28/S29** (P3) — README + laporan PDF (**wajib** R1/R3, paling menentukan nilai; hosting opsional)
 
 > `AGENTS.md` **root** sudah ditulis (commit `ca7ff00`) dan terbaca otomatis lewat
 > `opencode.json`. Yang belum: `apps/web/AGENTS.md` + `apps/api/AGENTS.md`.
@@ -516,8 +516,11 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
   - GUI mini ERB cukup 1 halaman dengan form per cipher (membuktikan "GUI berbasis web" untuk bonus 2).
 
 #### S22 — ⭐ Cross-verifikasi TS ↔ Ruby
-- [x] STATUS: SEBAGIAN (8 Okt 2026) — vektor bersama + .dat lintas bahasa sudah terbukti; skrip permanen + tabel laporan belum
-- 📌 Sudah terbukti: 27 kasus `vectors.json` lolos di Ruby (`spec/vectors_spec.rb`); `.dat` buatan Ruby didekripsi utuh oleh TS (4096 byte, 3 cipher); 5 kategori R2 utuh di API Ruby
+- [x] STATUS: DONE (8 Okt 2026)
+- 📌 File: `apps/web/scripts/cross-verify.ts`, `apps/api/bin/cross_cli.rb`, `apps/api/spec/cross_spec.rb`, `laporan/uji/cross-verify.{json,md}`
+- ✅ Verifikasi: **27/27 kasus identik** — enkripsi TS == Ruby == vektor resmi; dekripsi TS == Ruby. Jalankan: `pnpm --filter firdauscipher-web cross-verify`
+- 📌 Desain: 3 kolom dibandingkan (TS, Ruby, vektor resmi) → kalau dua implementasi "sama-sama salah" tetap ketahuan. Ruby dipanggil lewat CLI STDIN (tanpa server) supaya deterministik & bisa dipakai CI
+- 📌 Falsifiabilitas DIUJI: Ruby sengaja dirusak → harness melaporkan 0/27 & exit 1 (bukan selalu hijau)
 - 🔑 Kata kunci: cross-verification, konsistensi dua bahasa, test vectors, automated comparison, bukti laporan, http compare
 - 📦 Deliverable: skrip yang menjalankan semua `vectors.json` di kedua implementasi + laporan hasil
 - 📁 File: `apps/web/scripts/cross-verify.ts`, `apps/api/spec/cross_spec.rb`, `laporan/uji/cross-verify.md`
@@ -737,6 +740,8 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-08 11:20 | S22 | PART | Cross-verifikasi lintas bahasa SUDAH terbukti: 27 kasus vectors.json lolos di Ruby; file 4096 byte -> .dat (Ruby) -> didekripsi TS = utuh 100% (ext-vigenere/super/columnar); 5 kategori R2 (teks/gambar/database/audio/video) utuh lewat API Ruby; hasil dekripsi divalidasi tool asli: SQLite integrity_check=ok, PNG 240x160 ter-decode, WAV 22050Hz terbaca, MP4 & TXT valid. Belum: skrip permanen apps/web/scripts/cross-verify.ts + tabel laporan
 2026-10-08 11:20 | FIX  | DONE | mode request ("text") vs registry ("base64-text") beda arti -> /gui & default mode salah; kini dinormalisasi (text_mode?/defn_alpha?) + default mode mengikuti sifat cipher. Ditemukan lewat tes, bukan tebakan
 2026-10-08 11:20 | FIX  | WARN | aturan #17 (PLAN.md harus symlink) TIDAK dipatuhi sejak awal -> docs/PLAN.md & UTS/TODO.md drift 13 baris. Disinkronkan; akar masalah diperbaiki (lihat catatan #17 yang sudah dikoreksi)
+2026-10-08 11:45 | S22 | DONE | cross-verify.ts + cross_cli.rb + cross_spec.rb: 27/27 kasus IDENTIK (TS==Ruby==vektor resmi), 3 kolom dibandingkan; laporan/uji/cross-verify.{json,md}; 125 spec Ruby hijau; FALSIFIABILITAS diuji (Ruby dirusak -> 0/27, exit 1, bukan selalu hijau)
+2026-10-08 11:45 | FIX  | DONE | representasi params vectors.json (matrix/rotors = array) beda dgn harapan runCipher TS (string) -> harness menjembatani; Ruby menerima keduanya. Dicatat sbg catatan #20
 ```
 
 ---
@@ -762,3 +767,4 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 17. **`docs/PLAN.md` vs `UTS/TODO.md`**: **PENTING — dulu saya salah.** Idealnya salah satu jadi symlink, TAPI git menyimpan symlink sebagai path (bukan isi), sehingga isi TODO tidak ikut ter-commit/ter-backup. **Keputusan: dua file biasa, `docs/PLAN.md` = sumber otoritatif, dan WAJIB `cp docs/PLAN.md ".../UTS/TODO.md"` setiap kali selesai satu step.** Selalu cek `diff -q` sesudahnya. (Pernah drift 13 baris karena lupa sync.)
 18. **Nama paket pnpm wajib lowercase** → `firdauscipher-web` / `firdauscipher-api` (bukan camelCase), sedangkan nama tampilan produk tetap `FirdausCipher`.
 19. **Jangan jalankan `pnpm build` dan `pnpm dev` bersamaan** — keduanya memakai folder `.next` yang sama, sehingga build menghapus `.next/static/development/_buildManifest.js` milik dev server dan halaman jadi **HTTP 500** (error `ENOENT ... _buildManifest.js.tmp.*`). Hentikan dev dulu, atau `rm -rf .next` lalu jalankan ulang dev. Ini bukan bug kode.
+20. **Bentuk `params` di `vectors.json` ≠ bentuk yang diterima `runCipher`**: vektor menyimpan `matrix` (Hill) sebagai array-of-arrays dan `rotors` (Enigma) sebagai array, sedangkan `runCipher` TS mengharapkan **string** (`"6,24,1;13,16,10;..."`, `"I,II,III"`). Sisi Ruby menerima keduanya. `cross-verify.ts` menjembatani dengan `toTsParams()`. Kalau menambah vektor Hill/Enigma baru, ingat perbedaan ini.

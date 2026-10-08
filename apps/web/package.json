@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "roundtrip": "tsx scripts/roundtrip-test.ts"
+    "roundtrip": "tsx scripts/roundtrip-test.ts",
+    "cross-verify": "tsx scripts/cross-verify.ts"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
