@@ -48,6 +48,8 @@ AGENTS.md
 # ---- Build artifact tugas (jangan pernah di-commit) ----
 laporan/*.zip
 laporan/*.pdf
+# hasil build-laporan.py (gambar base64) — dihasilkan ulang, tidak perlu di-commit
+laporan/laporan-uts-kriptografi.html
 *.dat
 
 # ---- Log ----

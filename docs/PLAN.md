@@ -627,11 +627,25 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
   Struktur README sudah menyediakan tempatnya; tambahkan setelah F8 selesai.
 
 #### S29 — Laporan PDF (WAJIB aturan dosen R1–R3)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE (8 Okt) — `laporan/laporan-uts-kriptografi.pdf` (35 hal, 1,5 MB)
 - 🔑 Kata kunci: laporan pdf, screenshot antarmuka, contoh plaintext ciphertext, tabel centang, berhasil kurang berhasil, keterangan, kode program, readme
 - 📦 Deliverable: `laporan/laporan-uts-kriptografi.pdf`
-- 📁 File: `laporan/*`
-- ✅ Verifikasi: PDF memuat **semua** poin R1–R4 + tabel centang a–i terisi jujur
+- 📁 File: `laporan/build-laporan.py` (generator), `laporan/print-pdf.sh` (cetak),
+  `laporan/laporan-uts-kriptografi.html` (perantara), `laporan/laporan-uts-kriptografi.pdf`
+- ✅ Verifikasi: PDF 35 hal memuat **semua** poin R1–R4 + tabel centang a–i
+  terisi **jujur** (9/9 Berhasil + baris Transposisi Kolom). Semua ANGKA di PDF
+  diambil **otomatis** dari berkas bukti (`cross-verify.json`, `roundtrip.json`,
+  `screenshots.json`) dan dicek ulang: 27/27 cross-verify, 15/15 file
+  byte-identik, 11 screenshot, hitungan baris 11 modul kode — **semuanya cocok**.
+  Tidak ada teks meluber di 35 halaman (margin kanan ≥ 41 pt, dicek via
+  `pdftotext -bbox`). Tabel centang & cover diverifikasi visual.
+- 🧠 Catatan: Struktur = cover berkop → daftar isi → 8 bab → Lampiran A.
+  Bab 8 "Catatan Jujur" menguraikan keterbatasan apa adanya (cipher 26 huruf
+  mengubah file biner, Enigma dibatasi model Enigma I, Hill 2×2/3×3, batas file
+  100 MB, mode teks tak mengembalikan spasi, deploy belum dikerjakan) — sesuai
+  petunjuk soal agar hal yang belum selesai ditulis di laporan.
+  Dibuat dengan `python3 laporan/build-laporan.py && bash laporan/print-pdf.sh`
+  (Chromium headless, tanpa dependensi baru).
 - 🧠 Catatan — isi wajib sesuai §4.3:
   1. **Screenshot antarmuka** tiap cipher (dari app produksi) — R1
   2. **Contoh plaintext & ciphertext** untuk **text, gambar, database, audio, video** + penjelasan — R2 (pakai bukti S15)
@@ -761,6 +775,7 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-08 12:10 | FIX  | DONE | label cipher ganda: `columnar` & `super` SAMA-SAMA berlabel "g" (soal: g = Super Enkripsi; Transposisi Kolom hanya tahap internal, PLAN S11 "bagian dari g") -> ditemukan saat menyiapkan screenshot R1. Diperbaiki di KEDUA sisi: CipherDef.componentOf + cipherLabel() (TS) dan field "label" server (Ruby) dengan format identik; UI kini "Transposisi Kolom (bagian g)" & "g) Super Enkripsi". Badge "8 cipher" hardcoded -> dihitung dari registry ("8 cipher (a-h) + 1 tahap internal"). page.test.tsx ikut pakai cipherLabel() supaya tidak ada tes yang mengunci label lama
 2026-10-08 12:10 | S29 | PART | screenshot R1 otomatis: apps/web/scripts/screenshots.ts (pnpm screenshots) ambil 9 cipher mode teks -> laporan/screenshot/ui-*.png + screenshots.json. Terverifikasi lewat perintah resmi 9/9 OK, isi hasil dicek manual (Vigenere SERANG SUBUH SEKALI+LEMON=didoarwgphswqynwm). Sisa S29: susun PDF
 2026-10-08 12:35 | S29 | PART | screenshot mode FILE (R2) ditambah ke skrip yang sama: 2 kasus (contoh.png via ext-vigenere, contoh.sqlite via super) -> laporan/screenshot/file-*.png. Total 11/11 OK; isi dicek manual (contoh.png 90687 B -> contoh.png.dat, hex preview tampil, tanpa error)
+2026-10-08 13:05 | S29 | DONE | Laporan PDF 35 hal (1,5 MB) via Chromium headless. Generator build-laporan.py menarik SEMUA angka dari berkas bukti (bukan diketik manual): 27/27 cross-verify, 15/15 file byte-identik, 11 screenshot, hitungan baris 11 modul kode — dicek ulang & cocok. Tabel centang 9/9 Berhasil + baris Transposisi Kolom, diisi jujur. Bab 8 Catatan Jujur menguraikan keterbatasan apa adanya. 35 hal dicek tak ada teks meluber (margin kanan >=41pt via pdftotext -bbox); cover & tabel diverifikasi visual. Atas pilihan pemilik: individu, Farid Firdaus/237006081, kode disajikan ringkas (struktur + modul inti)
 2026-10-08 12:50 | S28 | DONE | README lengkap: root (10,9 KB) + apps/web (4,8 KB) + apps/api (5,7 KB). Bukan salinan: SEMUA angka & contoh diverifikasi ulang ke kode nyata (254 tes web, 127 spec Ruby, 27/27 cross-verify, 15/15 roundtrip, contoh API via rack-test, Hill ACT->poh, tautan internal dicek). 4 klaim salah ditemukan & diperbaiki: batas file 100 MB (bukan 8 MB), cipher.worker.ts (bukan crypto.worker.ts), 11 modul crypto (bukan 9), dan perilaku dekripsi mode teks (spasi/huruf besar tidak kembali -> didokumentasikan apa adanya). Bagian deploy/URL produksi sengaja belum ditulis (menunggu F8)
 2026-10-08 12:20 | S29 | PART | tabel file uji R2 (dulu kosong ⬜) diisi dari laporan/uji-file/roundtrip.json apa adanya: 5 kategori x SHA-256 identik; nama file dikoreksi ke yang NYATA ada (contoh.png/contoh.wav, bukan jpg/mp3 di draft). Sisa: PDF
 ```
