@@ -695,13 +695,22 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 
 **Tabel file uji wajib (R2):**
 
+Diisi dari `laporan/uji-file/roundtrip.json` (dijalankan S15, cipher Extended Vigenere).
+Kolom SHA-256 **sesudah** = setelah dekripsi; identik dengan **sebelum** membuktikan
+file utuh (byte-identical). Nama file mengikuti yang benar-benar ada di `packages/testfiles/`.
+
 | Kategori | Contoh file | Ukuran | SHA-256 sebelum | SHA-256 sesudah | Status |
 |---|---|---|---|---|---|
-| Teks | `contoh.txt` | | | | ⬜ |
-| Gambar | `contoh.jpg` | | | | ⬜ |
-| Database | `contoh.sqlite` | | | | ⬜ |
-| Audio | `contoh.mp3` | | | | ⬜ |
-| Video | `contoh.mp4` | | | | ⬜ |
+| Teks | `contoh.txt` | 602 B | `345fe5be…6db9` | `345fe5be…6db9` (identik) | ✅ |
+| Gambar | `contoh.png` | 90.687 B | `bf3beb90…7608` | `bf3beb90…7608` (identik) | ✅ |
+| Database | `contoh.sqlite` | 16.384 B | `613fa725…27e1` | `613fa725…27e1` (identik) | ✅ |
+| Audio | `contoh.wav` | 44.144 B | `ee8b5a43…27b9` | `ee8b5a43…27b9` (identik) | ✅ |
+| Video | `contoh.mp4` | 20.993 B | `0c5332d5…5d4d` | `0c5332d5…5d4d` (identik) | ✅ |
+
+Bukti pendukung: `allBinaryIdentical: true` untuk 3 cipher biner (ext-vigenere,
+columnar, super) × 5 kategori; cipher 26 huruf sengaja 0/5 karena memang merusak
+file biner (Sp2). Validasi eksternal: SQLite `integrity_check=ok`, PNG ter-decode,
+WAV terbaca, MP4 & TXT valid.
 
 ---
 
@@ -744,6 +753,7 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-08 11:45 | FIX  | DONE | representasi params vectors.json (matrix/rotors = array) beda dgn harapan runCipher TS (string) -> harness menjembatani; Ruby menerima keduanya. Dicatat sbg catatan #20
 2026-10-08 12:10 | FIX  | DONE | label cipher ganda: `columnar` & `super` SAMA-SAMA berlabel "g" (soal: g = Super Enkripsi; Transposisi Kolom hanya tahap internal, PLAN S11 "bagian dari g") -> ditemukan saat menyiapkan screenshot R1. Diperbaiki di KEDUA sisi: CipherDef.componentOf + cipherLabel() (TS) dan field "label" server (Ruby) dengan format identik; UI kini "Transposisi Kolom (bagian g)" & "g) Super Enkripsi". Badge "8 cipher" hardcoded -> dihitung dari registry ("8 cipher (a-h) + 1 tahap internal"). page.test.tsx ikut pakai cipherLabel() supaya tidak ada tes yang mengunci label lama
 2026-10-08 12:10 | S29 | PART | screenshot R1 otomatis: apps/web/scripts/screenshots.ts (pnpm screenshots) ambil 9 cipher mode teks -> laporan/screenshot/ui-*.png + screenshots.json. Terverifikasi lewat perintah resmi 9/9 OK, isi hasil dicek manual (Vigenere SERANG SUBUH SEKALI+LEMON=didoarwgphswqynwm). Sisa S29: susun PDF
+2026-10-08 12:20 | S29 | PART | tabel file uji R2 (dulu kosong ⬜) diisi dari laporan/uji-file/roundtrip.json apa adanya: 5 kategori x SHA-256 identik; nama file dikoreksi ke yang NYATA ada (contoh.png/contoh.wav, bukan jpg/mp3 di draft). Sisa: PDF
 ```
 
 ---
