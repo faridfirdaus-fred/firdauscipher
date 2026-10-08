@@ -111,5 +111,30 @@
     "kind": "teks",
     "error": null,
     "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-enigma.png"
+  },
+  {
+    "mode": "file",
+    "slug": "ext-vigenere",
+    "label": "c) Extended Vigenere (256 ASCII)",
+    "file": "contoh.png",
+    "keys": {
+      "key": "RAHASIA"
+    },
+    "output": "contoh.png.dat",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/file-ext-vigenere-contoh.png"
+  },
+  {
+    "mode": "file",
+    "slug": "super",
+    "label": "g) Super Enkripsi",
+    "file": "contoh.sqlite",
+    "keys": {
+      "key1": "RAHASIA",
+      "key2": "ZEBRAS"
+    },
+    "output": "contoh.sqlite.dat",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/file-super-contoh.png"
   }
 ]

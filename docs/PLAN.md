@@ -612,12 +612,19 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: edge case: plaintext kosong, key 1 huruf, key > panjang plaintext, plaintext tanpa alfabet, file 0 byte, file 1 byte.
 
 #### S28 — README kedua app (WAJIB aturan dosen R3)
-- [ ] STATUS: TODO
+- [x] STATUS: DONE (8 Okt) — kecuali bagian deploy/URL produksi (menunggu F8)
 - 🔑 Kata kunci: readme, cara menjalankan, prerequisites, pnpm install, pnpm dev, test, bundle, rspec, deploy, screenshot, dokumentasi algoritma
 - 📦 Deliverable: `README.md` root + `apps/web/README.md` + `apps/api/README.md` — langkah menjalankan dari nol
 - 📁 File: `README.md`, `apps/web/README.md`, `apps/api/README.md`
-- ✅ Verifikasi: ikuti README dari folder kosong di terminal baru → kedua app jalan tanpa langkah tersembunyi
-- 🧠 Catatan: **wajib** (R3). Isi: prasyarat versi Node/Ruby, perintah instalasi, cara pakai tiap cipher, penjelasan format `.dat`, cara deploy, link URL produksi, catatan cold start Render.
+- ✅ Verifikasi: **setiap angka & contoh di README diuji ulang ke kode/perintah nyata**
+  (254 tes web, 127 spec Ruby, 27/27 cross-verify, 15/15 roundtrip, contoh API
+  dijalankan lewat rack-test, contoh Hill & Vigenere dijalankan di Ruby, semua
+  tautan internal dicek ada). 4 klaim salah ditemukan & diperbaiki saat verifikasi:
+  batas file (100 MB, bukan 8 MB), nama `cipher.worker.ts`, jumlah modul (11),
+  dan hasil dekripsi mode teks (`serangsubuhsekali`, bukan `SERANG SUBUH SEKALI`).
+- 🧠 Catatan: **wajib** (R3). Bagian **cara deploy + URL produksi + cold start
+  Render** BELUM ditulis karena hosting (F8) sengaja ditunda oleh pemilik project.
+  Struktur README sudah menyediakan tempatnya; tambahkan setelah F8 selesai.
 
 #### S29 — Laporan PDF (WAJIB aturan dosen R1–R3)
 - [ ] STATUS: TODO
@@ -753,6 +760,8 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-08 11:45 | FIX  | DONE | representasi params vectors.json (matrix/rotors = array) beda dgn harapan runCipher TS (string) -> harness menjembatani; Ruby menerima keduanya. Dicatat sbg catatan #20
 2026-10-08 12:10 | FIX  | DONE | label cipher ganda: `columnar` & `super` SAMA-SAMA berlabel "g" (soal: g = Super Enkripsi; Transposisi Kolom hanya tahap internal, PLAN S11 "bagian dari g") -> ditemukan saat menyiapkan screenshot R1. Diperbaiki di KEDUA sisi: CipherDef.componentOf + cipherLabel() (TS) dan field "label" server (Ruby) dengan format identik; UI kini "Transposisi Kolom (bagian g)" & "g) Super Enkripsi". Badge "8 cipher" hardcoded -> dihitung dari registry ("8 cipher (a-h) + 1 tahap internal"). page.test.tsx ikut pakai cipherLabel() supaya tidak ada tes yang mengunci label lama
 2026-10-08 12:10 | S29 | PART | screenshot R1 otomatis: apps/web/scripts/screenshots.ts (pnpm screenshots) ambil 9 cipher mode teks -> laporan/screenshot/ui-*.png + screenshots.json. Terverifikasi lewat perintah resmi 9/9 OK, isi hasil dicek manual (Vigenere SERANG SUBUH SEKALI+LEMON=didoarwgphswqynwm). Sisa S29: susun PDF
+2026-10-08 12:35 | S29 | PART | screenshot mode FILE (R2) ditambah ke skrip yang sama: 2 kasus (contoh.png via ext-vigenere, contoh.sqlite via super) -> laporan/screenshot/file-*.png. Total 11/11 OK; isi dicek manual (contoh.png 90687 B -> contoh.png.dat, hex preview tampil, tanpa error)
+2026-10-08 12:50 | S28 | DONE | README lengkap: root (10,9 KB) + apps/web (4,8 KB) + apps/api (5,7 KB). Bukan salinan: SEMUA angka & contoh diverifikasi ulang ke kode nyata (254 tes web, 127 spec Ruby, 27/27 cross-verify, 15/15 roundtrip, contoh API via rack-test, Hill ACT->poh, tautan internal dicek). 4 klaim salah ditemukan & diperbaiki: batas file 100 MB (bukan 8 MB), cipher.worker.ts (bukan crypto.worker.ts), 11 modul crypto (bukan 9), dan perilaku dekripsi mode teks (spasi/huruf besar tidak kembali -> didokumentasikan apa adanya). Bagian deploy/URL produksi sengaja belum ditulis (menunggu F8)
 2026-10-08 12:20 | S29 | PART | tabel file uji R2 (dulu kosong ⬜) diisi dari laporan/uji-file/roundtrip.json apa adanya: 5 kategori x SHA-256 identik; nama file dikoreksi ke yang NYATA ada (contoh.png/contoh.wav, bukan jpg/mp3 di draft). Sisa: PDF
 ```
 

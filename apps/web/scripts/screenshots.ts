@@ -37,6 +37,14 @@ type Case = {
   keys: Record<string, string>;
 };
 
+/** File uji R2 (ada di packages/testfiles/) — 5 kategori wajib dosen. */
+const TESTFILES = path.resolve(process.cwd(), "../../packages/testfiles");
+
+const FILE_CASES: { slug: string; label: string; file: string; keys: Record<string, string> }[] = [
+  { slug: "ext-vigenere", label: "c) Extended Vigenere (256 ASCII)", file: "contoh.png", keys: { key: "RAHASIA" } },
+  { slug: "super", label: "g) Super Enkripsi", file: "contoh.sqlite", keys: { key1: "RAHASIA", key2: "ZEBRAS" } },
+];
+
 const CASES: Case[] = [
   { slug: "vigenere", label: "a) Vigenere Standard", text: "SERANG SUBUH SEKALI", keys: { key: "LEMON" } },
   { slug: "autokey", label: "b) Auto-Key Vigenere", text: "SERANG SUBUH SEKALI", keys: { key: "QUEENLY" } },
@@ -126,6 +134,69 @@ async function main() {
     console.log(`[${status}] ${c.label} -> ${got.kind ?? "-"} ${(got.output ?? got.error ?? "").slice(0, 60)}`);
 
     report.push({ slug: c.slug, label: c.label, plaintext: c.text, keys: c.keys, ...got, png: file });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Mode FILE (R2): bukti antarmuka untuk 5 kategori file wajib dosen.
+  // ---------------------------------------------------------------------------
+  for (const fc of FILE_CASES) {
+    const src = path.join(TESTFILES, fc.file);
+    if (!fs.existsSync(src)) {
+      console.log(`[LEWAT] ${fc.file} tidak ada di ${TESTFILES}`);
+      continue;
+    }
+
+    await page.goto(BASE, { waitUntil: "networkidle", timeout: 60_000 });
+
+    await page.click('[aria-label="Pilih cipher"]');
+    await page.waitForTimeout(300);
+    await page.click(`[role="option"]:has-text("${fc.label}")`);
+    await page.waitForTimeout(600);
+
+    for (const [k, v] of Object.entries(fc.keys)) {
+      const sel = `#key-${k}`;
+      if ((await page.locator(sel).count()) === 0) continue;
+      await page.fill(sel, v);
+    }
+
+    // pindah ke tab "Mode File"
+    await page.getByRole("tab", { name: "Mode File" }).click();
+    await page.waitForTimeout(500);
+
+    await page.setInputFiles("#file-input", src);
+    await page.waitForTimeout(800);
+
+    // klik tombol enkripsi file; unduhan ditangkap supaya tidak menggantung
+    const dl = page.waitForEvent("download", { timeout: 20_000 }).catch(() => null);
+    await page.getByRole("button", { name: /Enkripsi .* Unduh/ }).click();
+    await dl;
+    await page.waitForTimeout(2000);
+
+    const got = await page.evaluate(() => {
+      const name = document.querySelector('[data-testid="file-result-name"]');
+      const alerts = Array.from(document.querySelectorAll('[role="alert"]'));
+      const errBox = alerts.find((a) => /Gagal|gagal/i.test(a.textContent ?? ""));
+      return {
+        output: name ? (name.textContent ?? "").trim() : null,
+        error: errBox ? (errBox.textContent ?? "").trim().slice(0, 200) : null,
+      };
+    });
+
+    const outFile = path.join(OUT, `file-${fc.slug}-${path.parse(fc.file).name}.png`);
+    await page.screenshot({ path: outFile, fullPage: true });
+
+    const status = got.error ? "GAGAL" : got.output ? "OK" : "KOSONG";
+    console.log(`[${status}] FILE ${fc.file} (${fc.label}) -> ${got.output ?? got.error ?? "-"}`);
+
+    report.push({
+      mode: "file",
+      slug: fc.slug,
+      label: fc.label,
+      file: fc.file,
+      keys: fc.keys,
+      ...got,
+      png: outFile,
+    });
   }
 
   const summary = path.join(OUT, "screenshots.json");

@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FirdausCipher — Web (frontend)
 
-## Getting Started
+Antarmuka web FirdausCipher: 8 cipher klasik untuk **mode teks** dan **mode file**.
+Dibangun dengan **Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4**,
+seluruh proses cipher berjalan **di sisi klien** (tidak ada data yang dikirim ke
+server saat memakai aplikasi).
 
-First, run the development server:
+> README utama (cara menjalankan dari nol): [`../../README.md`](../../README.md)
+
+---
+
+## Menjalankan
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# dari root repositori (monorepo pnpm)
+pnpm install
+pnpm dev                       # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Atau dari folder ini:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev                       # dev server
+pnpm build                     # build produksi
+pnpm start                     # jalankan hasil build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> **Jangan** menjalankan `pnpm build` dan `pnpm dev` bersamaan — keduanya
+> memakai folder `.next` yang sama sehingga dev server bisa error 500.
+> Jika terjadi: hentikan dev, `rm -rf .next`, lalu `pnpm dev` lagi.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Perintah
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Perintah | Fungsi |
+|---|---|
+| `pnpm dev` | dev server (Turbopack) |
+| `pnpm build` | build produksi |
+| `pnpm start` | jalankan hasil build |
+| `pnpm typecheck` | cek tipe TypeScript (`tsc --noEmit`) |
+| `pnpm lint` | ESLint |
+| `pnpm test` | tes unit & integrasi (Vitest) |
+| `pnpm test:coverage` | tes + laporan cakupan |
+| `pnpm roundtrip` | uji 5 kategori file → byte-identik setelah enkripsi+dekripsi |
+| `pnpm cross-verify` | bandingkan hasil TS ↔ Ruby ↔ vektor acuan |
+| `pnpm screenshots` | ambil screenshot antarmuka tiap cipher |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Susunan kode
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/
+│   ├── page.tsx            halaman utama: pilih cipher → mode → jalankan
+│   └── layout.tsx          kerangka & metadata
+├── components/
+│   ├── cipher-selector.tsx pemilih cipher (a–h)
+│   ├── mode-panel.tsx      tab "Mode Teks" / "Mode File"
+│   ├── text-panel.tsx      panel enkripsi/dekripsi teks
+│   ├── file-panel.tsx      panel enkripsi/dekripsi file (.dat)
+│   ├── key-fields.tsx      kolom parameter dinamis per cipher
+│   └── ui/                 komponen dasar (button, card, tabs, select, alert)
+└── lib/
+    ├── crypto/             LOGIKA CIPHER (inti aplikasi)
+    │   ├── index.ts        registry CIPHERS + runCipher() + cipherLabel()
+    │   ├── core.ts         sanitize26, mod, modInverse, matriks, base64
+    │   ├── envelope.ts     format file .dat (magic KRI1)
+    │   ├── vigenere.ts     a) Vigenere + b) Auto-Key
+    │   ├── extended-vigenere.ts   c) Extended Vigenere 256 ASCII
+    │   ├── playfair.ts     d) Playfair
+    │   ├── affine.ts       e) Affine
+    │   ├── hill.ts         f) Hill (2×2 & 3×3)
+    │   ├── super-encryption.ts    g) Super Enkripsi
+    │   ├── columnar.ts     Transposisi Kolom (bagian dari g)
+    │   └── enigma.ts       h) Enigma (Bonus)
+    ├── cipher-runner.ts    alur enkripsi/dekripsi FILE (pakai envelope)
+    ├── worker-client.ts    pemanggil Web Worker
+    ├── cipher.worker.ts    worker: jalankan cipher tanpa membekukan UI
+    ├── use-cipher-worker.ts  hook React pembungkus worker-client
+    └── file-utils.ts       validasi & baca file (batas 100 MB)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Poin penting:** `src/lib/crypto/index.ts` adalah satu-satunya sumber kebenaran
+daftar cipher. Untuk menambah cipher, tambahkan entri di `CIPHERS` — dropdown,
+badge, dan validasi ikut menyesuaikan otomatis (label dibuat oleh `cipherLabel()`,
+jangan di-hardcode di komponen).
+
+---
+
+## Cara kerja
+
+1. `page.tsx` menyimpan cipher terpilih, menampilkan `mode-panel.tsx`.
+2. Panel teks/file memanggil `worker-client.ts` → `cipher.worker.ts` (lewat hook
+   `use-cipher-worker.ts`) agar perhitungan berat tidak membekukan antarmuka.
+3. Worker memanggil `runCipher()` di `src/lib/crypto/index.ts`, yang memilih
+   modul cipher sesuai slug.
+4. Untuk **file**, `cipher-runner.ts` membungkus hasilnya ke envelope `.dat`
+   (magic `KRI1`) sehingga nama asli, MIME, dan cipher tersimpan dan file bisa
+   didekripsi kembali.
+
+Cipher **26 huruf** (a, b, d, e, f, h) hanya memproses huruf A–Z — memakai cipher
+ini pada file biner **akan merusak file**, dan itu perilaku yang benar. Gunakan
+cipher **biner** (c, g) untuk file.
+
+---
+
+## Pengujian
+
+```bash
+pnpm typecheck && pnpm lint && pnpm test     # 254 tes, 19 file
+pnpm cross-verify                            # 27/27 identik dengan Ruby
+pnpm roundtrip                               # 15/15 byte-identik (5 kategori)
+```
+
+`cross-verify` dan `roundtrip` menulis bukti ke `../../laporan/uji*` sehingga
+bisa langsung dilampirkan di laporan.
+
+`pnpm screenshots` memerlukan **dev server hidup** dan Chromium. Jika Chromium
+tidak ditemukan, jalankan `npx playwright install chromium` atau set
+`CHROME_PATH` ke binary Chrome/Chromium yang ada.

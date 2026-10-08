@@ -1,43 +1,128 @@
 # FirdausCipher
 
-Lab cipher klasik berbasis web — project UTS Kriptografi.
+Lab cipher klasik berbasis web — **Project UTS Kriptografi**.
 
-Implementasi TypeScript (frontend, Cloudflare Workers) + Ruby (backend, Render).
+Delapan cipher klasik (a–h) dalam satu antarmuka web, untuk **teks** maupun **file
+biner** (teks, gambar, database, audio, video). Crypto berjalan **100% di sisi
+klien** (TypeScript), dengan **implementasi Ruby kedua** sebagai REST API untuk
+pembuktian silang hasil antar-bahasa pemrograman.
 
-## Struktur
+> Dokumen ini adalah **README utama** (cara menjalankan dari nol). README
+> per-aplikasi: [`apps/web/README.md`](apps/web/README.md) ·
+> [`apps/api/README.md`](apps/api/README.md).
+
+---
+
+## Daftar isi
+
+- [Fitur](#fitur)
+- [Daftar cipher](#daftar-cipher)
+- [Arsitektur](#arsitektur)
+- [Prasyarat](#prasyarat)
+- [Menjalankan dari nol](#menjalankan-dari-nol)
+- [Cara memakai aplikasi](#cara-memakai-aplikasi)
+- [Menjalankan pengujian](#menjalankan-pengujian)
+- [Bukti & laporan](#bukti--laporan)
+- [Struktur repositori](#struktur-repositori)
+- [Pemecahan masalah](#pemecahan-masalah)
+
+---
+
+## Fitur
+
+| Fitur | Keterangan |
+|---|---|
+| **8 cipher klasik** | Vigenere (a), Auto-Key (b), Extended Vigenere 256 ASCII (c), Playfair (d), Affine (e), Hill (f), Super Enkripsi (g), Enigma (h) |
+| **Mode teks** | Hanya huruf A–Z yang diproses (spasi & tanda baca dilewati, dengan pemberitahuan) |
+| **Mode file** | Byte-per-byte, mendukung semua jenis file sampai **100 MB** |
+| **Envelope `.dat`** | Hasil enkripsi file dibungkus format **KRI1** (magic + version + header JSON) sehingga bisa didekripsi kembali kapan saja |
+| **Enkripsi & dekripsi** | Kedua arah untuk semua cipher |
+| **Implementasi ganda** | TypeScript (frontend) **dan** Ruby (REST API) — hasilnya dibuktikan identik |
+| **Privasi** | Tidak ada data yang dikirim ke server saat memakai aplikasi web; seluruh proses di browser |
+
+---
+
+## Daftar cipher
+
+Huruf mengikuti penomoran soal UTS.
+
+| # | Cipher | Jenis | Parameter | Contoh |
+|---|---|---|---|---|
+| **a** | Vigenere Standard | 26 huruf | Kunci (teks) | `SERANG SUBUH SEKALI` + `LEMON` → `didoarwgphswqynwm` |
+| **b** | Auto-Key Vigenere | 26 huruf | Kunci (teks) | keystream = kunci + plaintext |
+| **c** | Extended Vigenere (256 ASCII) | biner | Kunci (teks) | semua byte 0–255, termasuk `0x00` |
+| **d** | Playfair | 26 huruf | Kunci (teks) | matriks 5×5, I/J digabung, filler `X` |
+| **e** | Affine | 26 huruf | `a` (12 nilai koprima), `b` | `E(x) = (a·x + b) mod 26` |
+| **f** | Hill | 26 huruf | Matriks (2×2 atau 3×3) | `ACT` + `[[6,24,1],[13,16,10],[20,17,15]]` → `poh` |
+| **g** | Super Enkripsi | biner | Kunci 1 + Kunci 2 | Vigenere 256 **+** Transposisi Kolom |
+| **h** | Enigma (Bonus) | 26 huruf | Rotor, reflector, ring, posisi, plugboard | 3 rotor `I,II,III`, reflector `B` |
+
+**Catatan penomoran.** Transposisi Kolom **tidak** diberi huruf sendiri karena
+merupakan tahap ke-2 dari Super Enkripsi (soal poin g). Di antarmuka ia tampil
+sebagai *"Transposisi Kolom (bagian g)"*, sehingga setiap huruf a–h dipakai
+tepat satu cipher.
+
+---
+
+## Arsitektur
 
 ```
-apps/web/           Next.js 15 — GUI cipher (deploy: Cloudflare Workers)
-apps/api/           Ruby Sinatra — REST API + GUI mini (deploy: Render)
-packages/vectors/   Test vectors bersama TS & Ruby
+apps/web/   Next.js 15 (App Router) + React 19 + TypeScript + Tailwind 4
+            -> seluruh logika cipher (src/lib/crypto/*), Web Worker, GUI
+            -> deploy: static assets (crypto client-side)
+
+apps/api/   Ruby 3.3 + Sinatra
+            -> port kedua semua cipher (lib/firdaus_cipher/*) + REST API + GUI mini
+            -> deploy: server Ruby
+
+packages/   vectors/  27 test vector bersama (dipakai TS & Ruby)
+            testfiles/ 5 file uji wajib (teks, gambar, database, audio, video)
 ```
+
+**Mengapa dua implementasi?** Agar hasil dapat **dibuktikan**, bukan sekadar
+diklaim: `pnpm cross-verify` menjalankan 27 vektor di **TypeScript** dan **Ruby**
+lalu membandingkannya dengan **vektor acuan** (dibuat terpisah dengan Python).
+Tiga kolom harus sama — sehingga tidak mungkin kedua implementasi "sama-sama salah".
+
+---
 
 ## Prasyarat
 
-- Node.js >= 20 (dites di v24.19.0)
-- pnpm >= 10 (dites di 12.4.2)
-- Ruby 3.3.8
-- Bundler 2.5+
+| Perangkat | Versi diuji | Cek |
+|---|---|---|
+| **Node.js** | v24.19.0 (min. 20) | `node -v` |
+| **pnpm** | 12.4.2 (min. 10) | `pnpm -v` |
+| **Ruby** | 3.3.8 | `ruby -v` |
+| **Bundler** | 2.5.22 | `bundle -v` |
 
-## Menjalankan
+Hanya **Node.js + pnpm** yang dibutuhkan untuk memakai aplikasi web. Ruby
+diperlukan hanya untuk menjalankan/menguji backend.
+
+---
+
+## Menjalankan dari nol
+
+### 1. Pasang dependensi JavaScript
 
 ```bash
+git clone <url-repo> firdauscipher
+cd firdauscipher
 pnpm install
-
-# frontend
-pnpm dev                 # http://localhost:3000
-
-# backend
-cd apps/api
-bundle install
-pnpm api                 # http://localhost:9292/health
 ```
 
-### Catatan backend lokal
+> Jika pnpm memperingatkan build script diblokir, jalankan `pnpm approve-builds --all -y`.
+> Konfigurasi `allowBuilds` sudah tersedia di `pnpm-workspace.yaml`.
 
-Di lokal API dijalankan dengan **webrick** (murni Ruby) lewat `apps/api/bin/server`,
-supaya tidak perlu `ruby-dev`/compiler. Gem `puma` dan `rubocop` ada di grup
-`production` dan `lint`, dan **di-skip di lokal**:
+### 2. Jalankan aplikasi web (frontend)
+
+```bash
+pnpm dev
+```
+
+Buka **<http://localhost:3000>**. Aplikasi langsung bisa dipakai — tidak
+memerlukan backend, karena seluruh proses cipher berjalan di browser.
+
+### 3. (Opsional) Jalankan REST API Ruby
 
 ```bash
 cd apps/api
@@ -45,24 +130,156 @@ bundle config set --local without "production lint"
 bundle install
 ```
 
-Di Render, `bundle config` di atas tidak dipakai sehingga puma ikut terpasang —
-lihat `render.yaml` (S24).
-
-### Shims bundler (kalau `bundle: command not found`)
-
-Ubuntu menaruh bundler sebagai `bundle3.3`/`bundler3.3`, bukan `bundle`:
-
 ```bash
-ln -sf /usr/bin/bundle3.3   ~/.local/bin/bundle
-ln -sf /usr/bin/bundler3.3  ~/.local/bin/bundler
+cd ../..            # kembali ke root
+pnpm api            # -> http://127.0.0.1:9292
 ```
 
-## Test
+Cek: <http://127.0.0.1:9292/health> → `{"status":"ok",...}`
+GUI mini: <http://127.0.0.1:9292/>
 
-```bash
-pnpm test                # vitest (frontend)
-pnpm api:test            # rspec (backend)
+> **Catatan.** Di lokal API memakai **WEBrick** (murni Ruby) lewat
+> `apps/api/bin/server`, sehingga tidak butuh compiler/`ruby-dev`. Gem `puma`
+> dan `rubocop` ada di grup `production`/`lint` dan sengaja dilewati di lokal;
+> di server produksi `bundle config` di atas tidak dipakai sehingga `puma`
+> ikut terpasang.
+
+---
+
+## Cara memakai aplikasi
+
+1. **Pilih cipher** dari dropdown di bagian atas (a–h).
+2. **Pilih mode**: **Mode Teks** atau **Mode File**.
+3. Isi **kunci/parameter** (nilai default sudah terisi contoh).
+4. **Mode Teks** — tempel plaintext → klik **Enkripsi** (atau **Dekripsi**).
+   Hasil muncul di kotak hasil dan bisa disalin.
+5. **Mode File** — pilih file apa pun → klik **Enkripsi & Unduh .dat**.
+   Untuk mengembalikan, buka tab **Dekripsi File (.dat)**, pilih file `.dat`,
+   lalu **Dekripsi & Unduh File Asli**.
+
+**Cipher mana untuk file?** Gunakan cipher **biner** (c, g) untuk file seperti
+gambar/audio/video/database. Cipher **26 huruf** (a, b, d, e, f, h) hanya
+memproses huruf dan **akan merusak file biner** — itu perilaku yang benar,
+bukan bug.
+
+### Format file `.dat`
+
+Hasil enkripsi file dibungkus envelope **KRI1** agar nama asli, tipe MIME, dan
+cipher-nya ikut tersimpan:
+
+```
+[0..3]   magic "KRI1"   [4] version   [5] cipher   [6..9] hdrLen (LE)
+[10..]   header JSON (UTF-8)   [..] payload ciphertext
 ```
 
-> Dokumentasi lengkap (cara pakai tiap cipher, format file `.dat`, cara deploy)
-> ditulis pada S28. Rencana kerja ada di `docs/PLAN.md`.
+Rincian lengkap: [`docs/format-file.md`](docs/format-file.md).
+
+### REST API (Ruby)
+
+| Metode | Rute | Keterangan |
+|---|---|---|
+| `GET` | `/health` | status server |
+| `GET` | `/api/ciphers` | daftar cipher + parameter |
+| `POST` | `/api/encrypt` | enkripsi teks/biner |
+| `POST` | `/api/decrypt` | dekripsi teks/biner |
+| `POST` | `/api/encrypt-file` | enkripsi file → `.dat` (base64) |
+| `POST` | `/api/decrypt-file` | dekripsi `.dat` → file asli |
+
+Contoh:
+
+```bash
+curl -s http://127.0.0.1:9292/api/encrypt \
+  -H 'Content-Type: application/json' \
+  -d '{"cipher":"vigenere","input":"U0VSQU5HIFNVQlVIIFNFS0FMSSA=","key":"LEMON","mode":"text"}'
+# {"output":"ZGlkb2Fyd2dwaHN3cXlud20=","meta":{...}}
+```
+
+`input`/`output` memakai **base64** agar byte biner aman lewat JSON.
+Dokumentasi rinci: [`apps/api/README.md`](apps/api/README.md).
+
+---
+
+## Menjalankan pengujian
+
+```bash
+# sekaligus (typecheck + tes web + spec Ruby)
+pnpm verify
+```
+
+Atau terpisah:
+
+```bash
+pnpm typecheck      # TypeScript
+pnpm lint           # ESLint
+pnpm test           # Vitest  (254 tes)
+pnpm api:test       # RSpec   (127 contoh)
+
+# bukti lintas-implementasi & alur file
+cd apps/web
+pnpm cross-verify   # 27 vektor: TypeScript == Ruby == vektor acuan
+pnpm roundtrip      # 5 kategori file -> byte-identik setelah enkripsi+dekripsi
+pnpm screenshots    # ambil screenshot antarmuka (butuh dev server hidup)
+```
+
+| Perintah | Hasil yang diharapkan |
+|---|---|
+| `pnpm test` | 254 tes lulus |
+| `pnpm api:test` | 127 contoh, 0 kegagalan |
+| `pnpm cross-verify` | **27/27 identik** (enkripsi & dekripsi) |
+| `pnpm roundtrip` | **15/15 byte-identik** (5 kategori × 3 cipher biner) |
+
+---
+
+## Bukti & laporan
+
+| Isi | Lokasi |
+|---|---|
+| Laporan UTS (PDF) | `laporan/laporan-uts-kriptografi.pdf` *(disusun pada langkah S29)* |
+| Screenshot antarmuka (R1) | `laporan/screenshot/ui-*.png`, `file-*.png` |
+| Tabel bukti cross-verify TS↔Ruby | `laporan/uji/cross-verify.md` |
+| Hasil uji file 5 kategori (R2) | `laporan/uji-file/roundtrip.json` |
+| Rencana kerja & log progres | `docs/PLAN.md` |
+| Spesifikasi format `.dat` | `docs/format-file.md` |
+
+---
+
+## Struktur repositori
+
+```
+firdauscipher/
+├── apps/
+│   ├── web/                 Next.js 15 — GUI + semua cipher (TypeScript)
+│   │   ├── src/lib/crypto/  core.ts, vigenere.ts, playfair.ts, ... (11 modul)
+│   │   ├── src/components/  panel teks, panel file, pemilih cipher
+│   │   ├── scripts/         cross-verify.ts, roundtrip-test.ts, screenshots.ts
+│   │   └── tests/           tes integrasi UI
+│   └── api/                 Ruby Sinatra — REST API + GUI mini
+│       ├── lib/firdaus_cipher/  port Ruby semua cipher
+│       ├── spec/                RSpec (127 contoh)
+│       └── bin/server           server lokal (WEBrick)
+├── packages/
+│   ├── vectors/             vectors.json (27 kasus) + generate.py (acuan)
+│   └── testfiles/           contoh.txt/.png/.sqlite/.wav/.mp4
+├── docs/                    PLAN.md, format-file.md
+└── laporan/                 laporan PDF, screenshot, bukti uji
+```
+
+---
+
+## Pemecahan masalah
+
+| Masalah | Penyebab & solusi |
+|---|---|
+| `bundle: command not found` | Ubuntu memasang `bundle3.3`. Buat symlink: `ln -sf /usr/bin/bundle3.3 ~/.local/bin/bundle` (dan `bundler3.3` → `bundler`). |
+| Gem gagal dikompilasi (`puma`, `prism`) | Butuh `ruby-dev`. Di lokal lewati saja: `bundle config set --local without "production lint"`. |
+| Halaman web **HTTP 500** | `pnpm build` dan `pnpm dev` memakai folder `.next` yang sama. Hentikan dev, jalankan `rm -rf apps/web/.next`, lalu `pnpm dev` lagi. |
+| Hasil mode teks "kehilangan" spasi | Cipher 26 huruf memang hanya memproses A–Z; spasi/tanda baca dilewati dan ada pemberitahuan. Gunakan cipher biner untuk mempertahankan byte apa adanya. |
+| File hasil `.dat` tidak bisa dibuka | `.dat` adalah **envelope terenkripsi**, bukan file aslinya. Dekripsi dulu lewat tab **Dekripsi File (.dat)** dengan kunci yang sama. |
+| `pnpm screenshots` gagal: Chromium tidak ditemukan | Pasang browser: `npx playwright install chromium`, atau set `CHROME_PATH` ke binary Chrome/Chromium yang ada. |
+
+---
+
+## Lisensi & konteks akademik
+
+Dibuat untuk **UTS mata kuliah Kriptografi** (Semester 7). Kode ditulis sendiri,
+tanpa duplikasi karya orang lain (sesuai aturan anti-plagiarisme soal UTS).
