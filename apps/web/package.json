@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "demo": "tsx scripts/demo.ts",
     "roundtrip": "tsx scripts/roundtrip-test.ts",
     "cross-verify": "tsx scripts/cross-verify.ts",
     "screenshots": "tsx scripts/screenshots.ts"

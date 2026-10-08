@@ -43,6 +43,7 @@ pnpm start                     # jalankan hasil build
 
 | Perintah | Fungsi |
 |---|---|
+| `pnpm demo` | demo satu perintah: 9 cipher + uji file + 27 vektor acuan (jalan offline) |
 | `pnpm dev` | dev server (Turbopack) |
 | `pnpm build` | build produksi |
 | `pnpm start` | jalankan hasil build |
@@ -88,6 +89,12 @@ src/
     ├── cipher.worker.ts    worker: jalankan cipher tanpa membekukan UI
     ├── use-cipher-worker.ts  hook React pembungkus worker-client
     └── file-utils.ts       validasi & baca file (batas 100 MB)
+
+scripts/                      (dijalankan dengan tsx)
+├── demo.ts                 demo satu perintah (pnpm demo)
+├── cross-verify.ts         bandingkan TS ↔ Ruby ↔ vektor acuan
+├── roundtrip-test.ts       uji 5 kategori file (byte-identik)
+└── screenshots.ts          ambil screenshot antarmuka
 ```
 
 **Poin penting:** `src/lib/crypto/index.ts` adalah satu-satunya sumber kebenaran
@@ -118,6 +125,7 @@ cipher **biner** (c, g) untuk file.
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm test     # 254 tes, 19 file
+pnpm demo                                    # SEMUA LULUS (9 cipher + 27 vektor)
 pnpm cross-verify                            # 27/27 identik dengan Ruby
 pnpm roundtrip                               # 15/15 byte-identik (5 kategori)
 ```

@@ -11,6 +11,7 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "typecheck": "pnpm --filter firdauscipher-web typecheck",
+    "demo": "pnpm --filter firdauscipher-web demo",
     "api": "cd apps/api && bundle exec ruby bin/server",
     "api:test": "cd apps/api && bundle exec rspec",
     "verify": "pnpm typecheck && pnpm test && pnpm api:test"

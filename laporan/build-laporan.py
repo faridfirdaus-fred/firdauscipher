@@ -602,11 +602,39 @@ def bab7() -> str:
     <tr><td>Permintaan keluar ke internet</td><td class="ok">0 (tidak ada) ✓</td></tr>
     <tr><td>REST API Ruby (<code>/health</code>, encrypt/decrypt)</td><td class="ok">Berhasil ✓</td></tr>
     <tr><td>Skrip screenshot (bukti R1)</td><td class="ok">11/11 ✓</td></tr>
+    <tr><td>Skrip demo (<code>pnpm demo</code>)</td><td class="ok">SEMUA LULUS ✓</td></tr>
   </table>
   <p class="note">Sebelumnya aplikasi memakai <code>next/font/google</code>
   (Geist) sehingga <code>pnpm build</code> <b>gagal</b> saat tidak ada internet.
   Font tersebut diganti ke tumpukan font sistem agar aman saat demo offline;
   seluruh 254 tes TypeScript dan 127 tes Ruby tetap lulus setelah perubahan.</p>
+
+  <h3 class="h3">7.7 Skrip Demo Satu Perintah (<code>pnpm demo</code>)</h3>
+  <p>Untuk memudahkan penguji (dosen/asisten) memverifikasi program tanpa harus
+  membuka peramban lebih dulu, disediakan skrip demo satu perintah. Skrip ini
+  <b>memanggil kode yang sama</b> dengan antarmuka web
+  (<code>apps/web/src/lib/crypto</code>) sehingga yang diuji benar-benar logika
+  asli program, bukan contoh terpisah yang ditulis ulang.</p>
+  <p>Skrip mencetak tiga bagian bukti ke terminal:</p>
+  <ul class="list">
+    <li><b>Bagian 1</b> — 9 cipher mode teks: enkripsi lalu dekripsi balik.</li>
+    <li><b>Bagian 2</b> — mode file (biner): <code>contoh.png</code>,
+      <code>contoh.sqlite</code>, <code>contoh.wav</code> dienkripsi, dibungkus
+      <code>.dat</code>, lalu didekripsi; SHA-256 sebelum vs sesudah dibandingkan.</li>
+    <li><b>Bagian 3</b> — 27 vektor acuan resmi harus cocok semua.</li>
+  </ul>
+  <table class="tbl keep">
+    <tr><th>Pemeriksaan</th><th>Hasil</th></tr>
+    <tr><td>9 cipher mode teks (enkripsi + dekripsi)</td><td class="ok">9/9 ✓</td></tr>
+    <tr><td>Uji file biner (SHA-256 identik)</td><td class="ok">3/3 ✓</td></tr>
+    <tr><td>Vektor acuan resmi</td><td class="ok">27/27 ✓</td></tr>
+    <tr><td>Dijalankan tanpa internet (<code>bwrap --unshare-net</code>)</td><td class="ok">SEMUA LULUS ✓</td></tr>
+  </table>
+  <p class="note">Skrip ini <b>keluar dengan kode 1</b> jika ada satu saja
+  pemeriksaan yang gagal. Sifat ini diuji secara sengaja: satu kasus vektor
+  dirusak &rarr; skrip melaporkan 1 kegagalan dan keluar dengan kode 1; setelah
+  dipulihkan, skrip kembali lulus. Jadi skrip ini bukan sekadar selalu
+  &ldquo;hijau&rdquo;.</p>
 </section>
 """
 

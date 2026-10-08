@@ -20,6 +20,7 @@ pembuktian silang hasil antar-bahasa pemrograman.
 - [Arsitektur](#arsitektur)
 - [Prasyarat](#prasyarat)
 - [Menjalankan dari nol](#menjalankan-dari-nol)
+- [Demo cepat (satu perintah)](#demo-cepat-satu-perintah)
 - [Cara memakai aplikasi](#cara-memakai-aplikasi)
 - [Menjalankan pengujian](#menjalankan-pengujian)
 - [Bukti & laporan](#bukti--laporan)
@@ -109,7 +110,7 @@ dihitung di browser/Node sendiri, dan halaman memakai font sistem.
 | `pnpm install` (sekali di awal) | **Ya** (unduh paket) |
 | `pnpm build`, `pnpm dev`, `pnpm api` | **Tidak** |
 | Memakai aplikasi (enkripsi/dekripsi, mode file) | **Tidak** |
-| `pnpm test`, `pnpm cross-verify` | **Tidak** |
+| `pnpm demo`, `pnpm test`, `pnpm cross-verify` | **Tidak** |
 
 Sudah diuji dengan jaringan dimatikan (`bwrap --unshare-net`): build sukses,
 aplikasi melayani halaman (HTTP 200) dan enkripsi Vigenere menghasilkan
@@ -165,6 +166,58 @@ GUI mini: <http://127.0.0.1:9292/>
 > dan `rubocop` ada di grup `production`/`lint` dan sengaja dilewati di lokal;
 > di server produksi `bundle config` di atas tidak dipakai sehingga `puma`
 > ikut terpasang.
+
+---
+
+## Demo cepat (satu perintah)
+
+Ingin langsung melihat programnya bekerja, tanpa membuka browser? Jalankan:
+
+```bash
+pnpm demo
+```
+
+Perintah ini memanggil **kode yang sama** dengan antarmuka web
+(`apps/web/src/lib/crypto`) dan mencetak bukti ke terminal — **tanpa server,
+tanpa internet**:
+
+1. **9 cipher mode teks** — enkripsi lalu dekripsi balik, menampilkan teks,
+   kunci, cipherteks, dan hasil dekripsi.
+2. **Mode file (biner)** — `contoh.png`, `contoh.sqlite`, `contoh.wav`
+   dienkripsi, dibungkus `.dat`, lalu didekripsi; **SHA-256 sebelum vs sesudah
+   harus identik**.
+3. **27 vektor acuan resmi** — semua kasus di
+   `packages/vectors/vectors.json` harus cocok.
+
+Contoh keluaran (dipotong):
+
+```text
+OK    | a) Vigenere Standard
+        teks     : SERANG SUBUH SEKALI
+        kunci    : {"key":"LEMON"}
+        cipher   : didoarwgphswqynwm
+        dekripsi : serangsubuhsekali  (persis)
+...
+Ringkasan bagian 1: 9/9 cipher berhasil enkripsi+dekripsi.
+Ringkasan bagian 3: 27/27 kasus cocok.
+
+==============================================================================
+SEMUA LULUS — 9 cipher (teks) + 27 vektor acuan.
+==============================================================================
+```
+
+| Perintah | Kegunaan |
+|---|---|
+| `pnpm demo` | Demo lengkap (bagian 1–3) |
+| `pnpm demo -- --ringkas` | Versi singkat (lewati bagian 2) |
+| `cd apps/web && pnpm demo` | Sama, dijalankan dari folder frontend |
+
+Skrip ini **keluar dengan kode 1** kalau ada satu saja pemeriksaan yang gagal,
+jadi bisa dipakai sebagai pemeriksaan cepat sebelum presentasi atau di CI.
+
+> **Untuk demo di kelas:** jalankan `pnpm demo` (bukti hitam-putih di terminal),
+> lalu `pnpm start` dan buka <http://localhost:3000> untuk menunjukkan
+> antarmukanya. Keduanya jalan tanpa wifi.
 
 ---
 
@@ -236,6 +289,9 @@ pnpm lint           # ESLint
 pnpm test           # Vitest  (254 tes)
 pnpm api:test       # RSpec   (127 contoh)
 
+# demo cepat (satu perintah, jalan offline)
+pnpm demo
+
 # bukti lintas-implementasi & alur file
 cd apps/web
 pnpm cross-verify   # 27 vektor: TypeScript == Ruby == vektor acuan
@@ -245,6 +301,7 @@ pnpm screenshots    # ambil screenshot antarmuka (butuh dev server hidup)
 
 | Perintah | Hasil yang diharapkan |
 |---|---|
+| `pnpm demo` | **SEMUA LULUS** (9 cipher + 27 vektor) |
 | `pnpm test` | 254 tes lulus |
 | `pnpm api:test` | 127 contoh, 0 kegagalan |
 | `pnpm cross-verify` | **27/27 identik** (enkripsi & dekripsi) |
