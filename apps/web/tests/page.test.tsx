@@ -13,7 +13,7 @@ import * as React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import Home from "@/app/page";
-import { CIPHERS } from "@/lib/crypto";
+import { CIPHERS, cipherLabel } from "@/lib/crypto";
 
 // jsdom belum punya API ini, padahal Radix Select memerlukannya.
 class ResizeObserverStub {
@@ -68,7 +68,7 @@ describe("S16 — halaman utama", () => {
     await user.click(screen.getByRole("combobox", { name: /Pilih cipher/i }));
     for (const c of CIPHERS) {
       expect(
-        await screen.findByRole("option", { name: `${c.letter}) ${c.name}` }),
+        await screen.findByRole("option", { name: cipherLabel(c) }),
         `opsi ${c.slug} tidak ada`,
       ).toBeTruthy();
     }
@@ -79,7 +79,7 @@ describe("S16 — halaman utama", () => {
     render(<Home />);
 
     for (const c of CIPHERS) {
-      await pilihCipher(user, `${c.letter}) ${c.name}`);
+      await pilihCipher(user, cipherLabel(c));
       // Panel teks selalu punya kolom Plaintext + tombol Enkripsi.
       await waitFor(() => {
         expect(screen.getByLabelText(/Plaintext/i), `${c.slug} tidak menampilkan input`).toBeTruthy();
@@ -96,7 +96,7 @@ describe("S16 — halaman utama", () => {
     render(<Home />);
 
     for (const c of CIPHERS) {
-      await pilihCipher(user, `${c.letter}) ${c.name}`);
+      await pilihCipher(user, cipherLabel(c));
       await user.click(screen.getByRole("tab", { name: "Mode File" }));
       await waitFor(() => {
         expect(document.querySelector("#file-input"), `${c.slug} tanpa input file`).toBeTruthy();

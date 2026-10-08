@@ -49,7 +49,7 @@
       <% ciphers.each do |c| %>
         <option value="<%= c['slug'] %>" data-mode="<%= c['mode'] %>" data-fields='<%= c['keyFields'].to_json %>'
                 <%= 'selected' if form['cipher'] == c['slug'] %>>
-          <%= c['letter'] %>) <%= c['name'] %>
+          <%= c['label'] %>
         </option>
       <% end %>
     </select>

@@ -1,0 +1,115 @@
+[
+  {
+    "slug": "vigenere",
+    "label": "a) Vigenere Standard",
+    "plaintext": "SERANG SUBUH SEKALI",
+    "keys": {
+      "key": "LEMON"
+    },
+    "output": "didoarwgphswqynwm",
+    "kind": "teks",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-vigenere.png"
+  },
+  {
+    "slug": "autokey",
+    "label": "b) Auto-Key Vigenere",
+    "plaintext": "SERANG SUBUH SEKALI",
+    "keys": {
+      "key": "QUEENLY"
+    },
+    "output": "iyvearqmflhfkcumc",
+    "kind": "teks",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-autokey.png"
+  },
+  {
+    "slug": "ext-vigenere",
+    "label": "c) Extended Vigenere (256 ASCII)",
+    "plaintext": "Serang subuh! 123",
+    "keys": {
+      "key": "RAHASIA"
+    },
+    "output": "paa6osGwYcW2qra7amGDc3s=",
+    "kind": "base64",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-ext-vigenere.png"
+  },
+  {
+    "slug": "playfair",
+    "label": "d) Playfair",
+    "plaintext": "TEMUI SAYA DI JEMBATAN",
+    "keys": {
+      "key": "MONARCHY"
+    },
+    "output": "lkcmsxnbrbsakfacrsra",
+    "kind": "teks",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-playfair.png"
+  },
+  {
+    "slug": "affine",
+    "label": "e) Affine",
+    "plaintext": "SERANG SUBUH SEKALI",
+    "keys": {
+      "a": "5",
+      "b": "8"
+    },
+    "output": "ucpivmuenerucgilw",
+    "kind": "teks",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-affine.png"
+  },
+  {
+    "slug": "hill",
+    "label": "f) Hill",
+    "plaintext": "SERANG SUBUH SEKALI",
+    "keys": {
+      "matrix": "6,24,1;13,16,10;20,17,15"
+    },
+    "output": "nahgizrsnugjeeqvhz",
+    "kind": "teks",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-hill.png"
+  },
+  {
+    "slug": "columnar",
+    "label": "Transposisi Kolom (bagian g)",
+    "plaintext": "SERANG SUBUH SEKALI",
+    "keys": {
+      "key": "ZEBRAS"
+    },
+    "output": "TlVBAFJVRQBFU1MAQUJLAEdITABTICBJ",
+    "kind": "base64",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-columnar.png"
+  },
+  {
+    "slug": "super",
+    "label": "g) Super Enkripsi",
+    "plaintext": "SERANG SUBUH SEKALI",
+    "keys": {
+      "key1": "RAHASIA",
+      "key2": "ZEBRAS"
+    },
+    "output": "oZaJAJqWlwCGpZQAgoqMAJCbjQClYWmc",
+    "kind": "base64",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-super.png"
+  },
+  {
+    "slug": "enigma",
+    "label": "h) Enigma (Bonus)",
+    "plaintext": "KRIPTOGRAFI",
+    "keys": {
+      "rotors": "I,II,III",
+      "ring": "AAA",
+      "position": "AAA",
+      "plugboard": ""
+    },
+    "output": "wcgxxkztlqb",
+    "kind": "teks",
+    "error": null,
+    "png": "/home/fred-demarco/Development/firdauscipher/laporan/screenshot/ui-enigma.png"
+  }
+]

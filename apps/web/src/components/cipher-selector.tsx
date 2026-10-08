@@ -7,7 +7,7 @@
  */
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CIPHERS } from "@/lib/crypto";
+import { CIPHERS, cipherLabel } from "@/lib/crypto";
 
 export function CipherSelector({
   value,
@@ -26,7 +26,7 @@ export function CipherSelector({
       <SelectContent>
         {CIPHERS.map((c) => (
           <SelectItem key={c.slug} value={c.slug}>
-            {c.letter}) {c.name}
+            {cipherLabel(c)}
           </SelectItem>
         ))}
       </SelectContent>

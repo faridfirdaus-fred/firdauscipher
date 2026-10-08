@@ -15,7 +15,7 @@ import { CipherSelector } from "@/components/cipher-selector";
 import { ModePanel } from "@/components/mode-panel";
 import { Badge } from "@/components/ui/feedback";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CIPHERS, getCipher } from "@/lib/crypto";
+import { CIPHERS, getCipher, cipherLabel } from "@/lib/crypto";
 
 export default function Home() {
   const [slug, setSlug] = React.useState(CIPHERS[0].slug);
@@ -26,7 +26,9 @@ export default function Home() {
       <header className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">FirdausCipher</h1>
-          <Badge className="border-emerald-500/50 text-emerald-700">8 cipher</Badge>
+          <Badge className="border-emerald-500/50 text-emerald-700">
+            {CIPHERS.filter((c) => !c.componentOf).length} cipher
+          </Badge>
           <Badge>tanpa library cipher pihak ketiga</Badge>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
@@ -41,7 +43,7 @@ export default function Home() {
         <CardHeader>
           <CardTitle>1. Pilih cipher</CardTitle>
           <CardDescription>
-            {cipher.letter}) {cipher.name} — {cipher.mode === "binary" ? "memproses semua byte (256 nilai)" : "hanya huruf A-Z (26 huruf)"}
+            {cipherLabel(cipher)} — {cipher.mode === "binary" ? "memproses semua byte (256 nilai)" : "hanya huruf A-Z (26 huruf)"}
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -59,7 +61,7 @@ export default function Home() {
                     : "border-border bg-background hover:bg-muted"
                 }`}
               >
-                {c.letter}) {c.name}
+                {cipherLabel(c)}
               </button>
             ))}
           </div>
@@ -78,7 +80,7 @@ export default function Home() {
         </p>
         <p className="flex items-center gap-1.5">
           <Github className="h-3.5 w-3.5" />
-          FirdausCipher · Tugas Besar Kriptografi · {CIPHERS.length} cipher dari registry tunggal
+          FirdausCipher · Tugas Besar Kriptografi · {CIPHERS.filter((c) => !c.componentOf).length} cipher (a–h) + {CIPHERS.filter((c) => c.componentOf).length} tahap internal, dari registry tunggal
         </p>
       </footer>
     </main>

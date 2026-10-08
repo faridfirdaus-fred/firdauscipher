@@ -165,7 +165,7 @@ export function FilePanel({ slug }: { slug: string }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Badge>{cipher.letter}</Badge>
+            <Badge>{cipher.componentOf ? `bagian ${cipher.componentOf}` : cipher.letter}</Badge>
             {cipher.name}
             {cipher.isAlpha ? <Badge className="border-amber-500/50 text-amber-700">26 huruf</Badge> : <Badge>256 byte</Badge>}
           </CardTitle>

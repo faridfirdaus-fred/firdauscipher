@@ -50,6 +50,39 @@ RSpec.describe FirdausCipher::App do
         expect(c["keyFields"]).to be_a(Array)
       end
     end
+
+    it "hanya SATU cipher per huruf soal (a-h) — sisanya ditandai componentOf" do
+      get "/api/ciphers"
+      ciphers = JSON.parse(last_response.body)["ciphers"]
+
+      # Regresi: dulu `columnar` dan `super` sama-sama berlabel "g" sehingga UI
+      # menampilkan dua cipher berhuruf g. Soal: g = Super Enkripsi saja.
+      berhuruf = ciphers.reject { |c| c["componentOf"] }
+      huruf = berhuruf.map { |c| c["letter"] }
+      expect(huruf.uniq.length).to eq(huruf.length),
+          "ada huruf soal yang dipakai lebih dari satu cipher: #{huruf.inspect}"
+      expect(huruf.sort).to eq(%w[a b c d e f g h])
+
+      # Cipher komponen tidak boleh dihitung sebagai cipher berhuruf.
+      columnar = ciphers.find { |c| c["slug"] == "columnar" }
+      expect(columnar["componentOf"]).to eq("g")
+      expect(columnar["label"]).to eq("Transposisi Kolom (bagian g)")
+
+      super_c = ciphers.find { |c| c["slug"] == "super" }
+      expect(super_c["componentOf"]).to be_nil
+      expect(super_c["label"]).to eq("g) Super Enkripsi")
+    end
+
+    it "label siap-tampil konsisten dengan letter/componentOf" do
+      get "/api/ciphers"
+      JSON.parse(last_response.body)["ciphers"].each do |c|
+        if c["componentOf"]
+          expect(c["label"]).to eq("#{c['name']} (bagian #{c['componentOf']})")
+        else
+          expect(c["label"]).to eq("#{c['letter']}) #{c['name']}")
+        end
+      end
+    end
   end
 
   describe "POST /api/encrypt" do

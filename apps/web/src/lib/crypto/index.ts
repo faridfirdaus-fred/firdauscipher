@@ -51,6 +51,13 @@ export interface CipherDef {
   slug: string;
   /** Huruf pada soal: a, b, c, d, e, f, g, h. */
   letter: string;
+  /**
+   * Kalau diisi, cipher ini BUKAN item berhuruf sendiri melainkan tahap
+   * internal dari cipher berhuruf tersebut. Contoh: Transposisi Kolom adalah
+   * tahap 2 dari Super Enkripsi (soal poin g), jadi TIDAK diberi huruf sendiri
+   * supaya tidak ada dua cipher berlabel huruf yang sama.
+   */
+  componentOf?: string;
   name: string;
   /** Cara payload diperlakukan pada file .dat. */
   mode: PayloadMode;
@@ -159,6 +166,17 @@ export function runCipher(
   }
 }
 
+/** Label tampilan satu cipher.
+ *
+ * Item biasa  -> "g) Super Enkripsi"
+ * Cipher komponen (bagian dari cipher lain) -> "Transposisi Kolom (bagian g)"
+ *
+ * Dipakai semua komponen UI supaya penomoran huruf konsisten satu sumber.
+ */
+export function cipherLabel(c: CipherDef): string {
+  return c.componentOf ? `${c.name} (bagian ${c.componentOf})` : `${c.letter}) ${c.name}`;
+}
+
 /** Registry lengkap — urut sesuai soal a–h. */
 export const CIPHERS: CipherDef[] = [
   {
@@ -243,6 +261,7 @@ export const CIPHERS: CipherDef[] = [
     id: CipherId.COLUMNAR,
     slug: "columnar",
     letter: "g",
+    componentOf: "g",
     name: "Transposisi Kolom",
     mode: "binary",
     isAlpha: false,

@@ -94,7 +94,7 @@ export function TextPanel({ slug }: { slug: string }) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Badge>{cipher.letter}</Badge>
+            <Badge>{cipher.componentOf ? `bagian ${cipher.componentOf}` : cipher.letter}</Badge>
             {cipher.name}
           </CardTitle>
           <CardDescription>{cipher.description}</CardDescription>

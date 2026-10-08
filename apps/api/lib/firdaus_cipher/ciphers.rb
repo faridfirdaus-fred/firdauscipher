@@ -167,7 +167,8 @@ module FirdausCipher
                      "defaultValue" => "6,24,1;13,16,10;20,17,15" }]),
         def_entry("columnar", "g", "Transposisi Kolom", "binary", false,
                   "Transposisi kolom pada byte. Dipakai juga sebagai tahap 2 Super Enkripsi.",
-                  [{ "name" => "key", "label" => "Kunci", "type" => "text", "defaultValue" => "ZEBRAS" }]),
+                  [{ "name" => "key", "label" => "Kunci", "type" => "text", "defaultValue" => "ZEBRAS" }],
+                  component_of: "g"),
         def_entry("super", "g", "Super Enkripsi", "binary", false,
                   "Extended Vigenere lalu Transposisi Kolom (dua kunci terpisah).",
                   [
@@ -189,12 +190,21 @@ module FirdausCipher
       ]
     end
 
-    def self.def_entry(slug, letter, name, mode, is_alpha, description, key_fields)
+    # `component_of` diisi kalau cipher ini BUKAN item berhuruf sendiri, melainkan
+    # tahap internal cipher berhuruf tersebut. Contoh: Transposisi Kolom adalah
+    # tahap 2 Super Enkripsi (soal poin g) -> tidak diberi huruf sendiri supaya
+    # tidak ada dua cipher berlabel huruf yang sama.
+    def self.def_entry(slug, letter, name, mode, is_alpha, description, key_fields,
+                       component_of: nil)
       {
         "id" => Envelope::CIPHER_IDS[slug],
         "slug" => slug,
         "letter" => letter,
         "name" => name,
+        # Label siap-tampil, dihitung di server supaya GUI & API tidak pernah
+        # berbeda penomoran. Format sama persis dengan cipherLabel() di TS.
+        "label" => component_of ? "#{name} (bagian #{component_of})" : "#{letter}) #{name}",
+        "componentOf" => component_of,
         "mode" => mode,
         "isAlpha" => is_alpha,
         "description" => description,
