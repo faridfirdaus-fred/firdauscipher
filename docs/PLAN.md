@@ -48,12 +48,12 @@
 | F4 | S13–S15 | File biner, envelope, round-trip 5 kategori ⭐ | 3 | ✅ 3/3 |
 | F5 | S16–S18 | GUI web + validasi kunci + worker | 3 | ✅ 3/3 |
 | F6 | S19 | ⭐ BONUS 1 — Enigma | 1 | ✅ 1/1 |
-| F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | 🟨 1/3 |
+| F7 | S20–S22 | ⭐ BONUS 2 — Ruby (backend) + cross-verify | 3 | 🟨 2/3 |
 | F8 | S23–S26 | 🚀 Hosting: Cloudflare Workers + Render + CI/CD | 4 | ⬜ 0/4 |
 | F9 | S27–S31 | QA, README, laporan PDF, kreativitas, paket | 5 | ⬜ 0/5 |
-| | | **TOTAL** | **31** | ✅ 19/31 |
+| | | **TOTAL** | **31** | ✅ 20/31 |
 
-**➡️ NEXT ACTION: S02** (P0) — *terhambat izin*
+**➡️ NEXT ACTION: S22** (P2) — skrip cross-verify permanen + tabel laporan
 
 > `AGENTS.md` **root** sudah ditulis (commit `ca7ff00`) dan terbaca otomatis lewat
 > `opencode.json`. Yang belum: `apps/web/AGENTS.md` + `apps/api/AGENTS.md`.
@@ -500,7 +500,9 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 - 🧠 Catatan: gem: `sinatra`, `puma`, `rackup`, `rack-cors`, `json`, `rspec`. Jalankan `bundle lock --add-platform x86_64-linux` (Render = Linux). Baca `packages/vectors/vectors.json` yang **sama** (D20).
 
 #### S21 — Port semua cipher + REST API + GUI mini Ruby
-- [ ] STATUS: TODO
+- [x] STATUS: DONE (8 Okt 2026)
+- 📌 Bukti: `apps/api/lib/firdaus_cipher/{vigenere,playfair,affine,hill,extended_vigenere,columnar,super_encryption,enigma,envelope,ciphers}.rb`; `apps/api/app.rb` (rute /health, /api/ciphers, /api/encrypt, /api/decrypt, /api/encrypt-file, /api/decrypt-file, /, /gui); `apps/api/views/index.erb`
+- 📌 Tes: `apps/api/spec/{vectors_spec,app_spec,file_flow_spec}.rb` → **116 examples, 0 failures**; `bundle exec rspec` hijau
 - 🔑 Kata kunci: ruby vigenere, autokey, playfair, affine, hill, extended vigenere, columnar, super enkripsi, enigma, sinatra routes, erb, api endpoint, base64, upload download, restore ekstensi
 - 📦 Deliverable: semua cipher a–h tersedia sebagai **REST API** + **GUI mini** (ERB) di app Ruby
 - 📁 File: `apps/api/lib/firdaus_cipher/*.rb`, `apps/api/app.rb`, `apps/api/views/index.erb`, `apps/api/public/`
@@ -514,7 +516,8 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
   - GUI mini ERB cukup 1 halaman dengan form per cipher (membuktikan "GUI berbasis web" untuk bonus 2).
 
 #### S22 — ⭐ Cross-verifikasi TS ↔ Ruby
-- [ ] STATUS: TODO
+- [x] STATUS: SEBAGIAN (8 Okt 2026) — vektor bersama + .dat lintas bahasa sudah terbukti; skrip permanen + tabel laporan belum
+- 📌 Sudah terbukti: 27 kasus `vectors.json` lolos di Ruby (`spec/vectors_spec.rb`); `.dat` buatan Ruby didekripsi utuh oleh TS (4096 byte, 3 cipher); 5 kategori R2 utuh di API Ruby
 - 🔑 Kata kunci: cross-verification, konsistensi dua bahasa, test vectors, automated comparison, bukti laporan, http compare
 - 📦 Deliverable: skrip yang menjalankan semua `vectors.json` di kedua implementasi + laporan hasil
 - 📁 File: `apps/web/scripts/cross-verify.ts`, `apps/api/spec/cross_spec.rb`, `laporan/uji/cross-verify.md`
@@ -730,6 +733,10 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 2026-10-08 00:43 | FIX  | DONE | Pesan validasi kunci terbaca "Kunci Kunci untuk Vigenere" (label diteruskan ganda) -> kini 'Kunci "key" untuk Vigenere ...'; tes menolak regresi ini
 2026-10-08 06:30 | S02 | PART | AGENTS.md root ditulis (10 aturan wajib, perintah standar, Sp1-Sp11, daftar cipher); apps/web & apps/api/AGENTS.md belum (penulisan file instruksi agent diblokir izin)
 2026-10-08 06:30 | S20 | DONE | apps/api/lib/firdaus_cipher/core.rb: port lengkap core utils (sanitize26, char/num, mod, modInverse, base64 manual, latin1/utf8/hex, gcd, det/matMul/transpose/cofactor/invert, assertSquare, padBlock); 34 spec lolos; server `/health` -> 200 (webrick lokal, puma grup production); `bundle lock --add-platform x86_64-linux` utk Render; paritas TS<->Ruby diuji 88 kasus IDENTIK + base64 vs referensi Python 45/45
+2026-10-08 11:20 | S21 | DONE | 10 file Ruby: vigenere, playfair, affine, hill, extended_vigenere, columnar, super_encryption, enigma, envelope, ciphers (registry+runner); app.rb 7 rute (/health /api/ciphers /api/encrypt /api/decrypt /api/encrypt-file /api/decrypt-file / /gui) + CORS dari env ALLOWED_ORIGIN; views/index.erb GUI mini 9 cipher; 116 spec lolos (vectors 47 + app 33 + file_flow 18 + core 18); HTTP nyata terverifikasi: vigenere ATTACKATDAWN/LEMON -> lxfopvefrnhr, CORS header benar, OPTIONS 204, GUI 200
+2026-10-08 11:20 | S22 | PART | Cross-verifikasi lintas bahasa SUDAH terbukti: 27 kasus vectors.json lolos di Ruby; file 4096 byte -> .dat (Ruby) -> didekripsi TS = utuh 100% (ext-vigenere/super/columnar); 5 kategori R2 (teks/gambar/database/audio/video) utuh lewat API Ruby; hasil dekripsi divalidasi tool asli: SQLite integrity_check=ok, PNG 240x160 ter-decode, WAV 22050Hz terbaca, MP4 & TXT valid. Belum: skrip permanen apps/web/scripts/cross-verify.ts + tabel laporan
+2026-10-08 11:20 | FIX  | DONE | mode request ("text") vs registry ("base64-text") beda arti -> /gui & default mode salah; kini dinormalisasi (text_mode?/defn_alpha?) + default mode mengikuti sifat cipher. Ditemukan lewat tes, bukan tebakan
+2026-10-08 11:20 | FIX  | WARN | aturan #17 (PLAN.md harus symlink) TIDAK dipatuhi sejak awal -> docs/PLAN.md & UTS/TODO.md drift 13 baris. Disinkronkan; akar masalah diperbaiki (lihat catatan #17 yang sudah dikoreksi)
 ```
 
 ---
@@ -752,6 +759,6 @@ Format: `YYYY-MM-DD HH:MM | STEP | STATUS | catatan singkat`
 14. **`$PORT` Render**: puma/rackup harus bind ke `ENV['PORT']`, bukan 9292 hardcode.
 15. **Bundler platform**: jalankan `bundle lock --add-platform x86_64-linux` supaya `Gemfile.lock` valid saat build di Render (mesin lokal bisa beda platform).
 16. **OpenCode**: `AGENTS.md` di root terbaca otomatis; `opencode.json` `instructions` untuk file tambahan. Kalau ada `CLAUDE.md` dan `AGENTS.md` bersamaan, **hanya `AGENTS.md`** yang dipakai → jangan taruh aturan hanya di `CLAUDE.md`.
-17. **`docs/PLAN.md`**: pakai **symlink** ke file TODO ini, jangan copy → supaya tidak ada dua versi yang beda.
+17. **`docs/PLAN.md` vs `UTS/TODO.md`**: **PENTING — dulu saya salah.** Idealnya salah satu jadi symlink, TAPI git menyimpan symlink sebagai path (bukan isi), sehingga isi TODO tidak ikut ter-commit/ter-backup. **Keputusan: dua file biasa, `docs/PLAN.md` = sumber otoritatif, dan WAJIB `cp docs/PLAN.md ".../UTS/TODO.md"` setiap kali selesai satu step.** Selalu cek `diff -q` sesudahnya. (Pernah drift 13 baris karena lupa sync.)
 18. **Nama paket pnpm wajib lowercase** → `firdauscipher-web` / `firdauscipher-api` (bukan camelCase), sedangkan nama tampilan produk tetap `FirdausCipher`.
 19. **Jangan jalankan `pnpm build` dan `pnpm dev` bersamaan** — keduanya memakai folder `.next` yang sama, sehingga build menghapus `.next/static/development/_buildManifest.js` milik dev server dan halaman jadi **HTTP 500** (error `ENOENT ... _buildManifest.js.tmp.*`). Hentikan dev dulu, atau `rm -rf .next` lalu jalankan ulang dev. Ini bukan bug kode.

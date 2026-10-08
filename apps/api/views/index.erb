@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FirdausCipher — GUI Mini (Ruby)</title>
+  <style>
+    :root { --bg:#0f172a; --card:#1e293b; --ink:#e2e8f0; --mut:#94a3b8; --acc:#38bdf8; --ok:#4ade80; --err:#f87171; }
+    * { box-sizing: border-box; }
+    body { margin:0; padding:2rem 1rem; background:var(--bg); color:var(--ink);
+           font:15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    h1 { margin:0 0 .25rem; font-size:1.6rem; }
+    .sub { color:var(--mut); margin:0 0 1.5rem; font-size:.92rem; }
+    .card { background:var(--card); border:1px solid #334155; border-radius:12px; padding:1.25rem; margin-bottom:1rem; }
+    label { display:block; font-weight:600; font-size:.86rem; margin:.75rem 0 .3rem; }
+    .hint { color:var(--mut); font-weight:400; }
+    input[type=text], input[type=number], select, textarea {
+      width:100%; padding:.55rem .7rem; border-radius:8px; border:1px solid #475569;
+      background:#0b1220; color:var(--ink); font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:.9rem; }
+    textarea { min-height:90px; resize:vertical; }
+    .row { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
+    button { padding:.6rem 1.1rem; border-radius:8px; border:0; background:var(--acc);
+             color:#062033; font-weight:700; cursor:pointer; font-size:.9rem; }
+    button.sec { background:#334155; color:var(--ink); }
+    .badge { display:inline-block; padding:.15rem .5rem; border-radius:999px; background:#334155;
+             color:var(--mut); font-size:.75rem; margin-left:.4rem; }
+    pre { background:#0b1220; border:1px solid #334155; border-radius:8px; padding:.85rem;
+          overflow-x:auto; font-size:.84rem; white-space:pre-wrap; word-break:break-all; margin:.35rem 0 0; }
+    .ok { color:var(--ok); } .err { color:var(--err); }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    @media (max-width:640px){ .grid2{ grid-template-columns:1fr; } }
+    .kv { color:var(--mut); font-size:.82rem; margin-top:.5rem; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>FirdausCipher <span class="badge">GUI mini · Ruby</span></h1>
+  <p class="sub">Implementasi ulang Bonus 2. Semua cipher a–h diproses di server Ruby —
+     hasilnya harus sama persis dengan GUI web (TypeScript).</p>
+
+  <% if error %>
+    <div class="card"><strong class="err">Error:</strong> <%= error %></div>
+  <% end %>
+
+  <form class="card" method="post" action="/gui" id="form">
+    <label for="cipher">Cipher</label>
+    <select name="cipher" id="cipher">
+      <% ciphers.each do |c| %>
+        <option value="<%= c['slug'] %>" data-mode="<%= c['mode'] %>" data-fields='<%= c['keyFields'].to_json %>'
+                <%= 'selected' if form['cipher'] == c['slug'] %>>
+          <%= c['letter'] %>) <%= c['name'] %>
+        </option>
+      <% end %>
+    </select>
+
+    <div id="fields"></div>
+
+    <label for="direction">Arah</label>
+    <select name="direction" id="direction">
+      <option value="encrypt" <%= 'selected' if form['direction'] == 'encrypt' %>>Enkripsi</option>
+      <option value="decrypt" <%= 'selected' if form['direction'] == 'decrypt' %>>Dekripsi</option>
+    </select>
+
+    <label for="input">Input <span class="hint">— teks biasa (bukan base64)</span></label>
+    <textarea name="input" id="input" placeholder="Serang subuh"><%= form['input_text'] %></textarea>
+    <input type="hidden" name="input_text" id="input_text" />
+
+    <div class="row">
+      <button type="submit">Proses</button>
+      <button type="button" class="sec" id="swap">Tukar input ⇄ output</button>
+    </div>
+  </form>
+
+  <% if result %>
+    <div class="card">
+      <strong class="ok">Hasil (<%= result[:meta][:direction] == 'encrypt' ? 'ciphertext' : 'plaintext' %>)</strong>
+      <pre id="output"><%= result[:meta][:outputText] || '(biner — lihat base64 di bawah)' %></pre>
+      <div class="kv">
+        cipher: <%= result[:meta][:cipher] %> · mode: <%= result[:meta][:mode] %> ·
+        <%= result[:meta][:inputBytes] %> → <%= result[:meta][:outputBytes] %> byte
+      </div>
+      <label>Base64 (siap kirim ke <code>/api/encrypt</code>)</label>
+      <pre><%= result[:output] %></pre>
+    </div>
+  <% end %>
+
+  <div class="card">
+    <strong>REST API</strong>
+    <div class="kv">Coba lewat curl:</div>
+    <pre>curl -s http://127.0.0.1:9292/api/ciphers
+
+curl -s -X POST http://127.0.0.1:9292/api/encrypt \
+  -H 'Content-Type: application/json' \
+  -d '{"cipher":"vigenere","mode":"text","input":"<%= (result ? result[:output] : 'QVRUQUNLQVREQVdO') %>","params":{"key":"LEMON"}}'</pre>
+  </div>
+</div>
+
+<script>
+  const defs = <%= ciphers.to_json %>;
+  const sel = document.getElementById('cipher');
+  const fields = document.getElementById('fields');
+  const saved = <%= (form['params'] || {}).to_json %>;
+
+  function render() {
+    const def = defs.find(d => d.slug === sel.value);
+    fields.innerHTML = '';
+    (def.keyFields || []).forEach(f => {
+      const wrap = document.createElement('div');
+      const val = saved[f.name] !== undefined ? saved[f.name] : (f.defaultValue ?? '');
+      let inner;
+      if (f.type === 'select') {
+        const opts = (f.options || [
+          {value:'A',label:'A'},{value:'B',label:'B'},{value:'C',label:'C'}
+        ]).map(o => `<option value="${o.value}" ${o.value==val?'selected':''}>${o.label}</option>`).join('');
+        inner = `<select name="params.${f.name}">${opts}</select>`;
+      } else {
+        inner = `<input type="${f.type === 'number' ? 'number' : 'text'}" name="params.${f.name}"
+                  value="${val}" placeholder="${f.label}">`;
+      }
+      wrap.innerHTML = `<label>${f.label}</label>${inner}`;
+      fields.appendChild(wrap);
+    });
+  }
+  sel.addEventListener('change', render);
+  render();
+
+  // Tombol tukar: pakai output sebagai input berikutnya.
+  const swap = document.getElementById('swap');
+  swap.addEventListener('click', () => {
+    const out = document.getElementById('output');
+    if (out) document.getElementById('input').value = out.textContent.trim();
+  });
+</script>
+</body>
+</html>
