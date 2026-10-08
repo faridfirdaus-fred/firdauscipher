@@ -41,22 +41,22 @@ type Case = {
 const TESTFILES = path.resolve(process.cwd(), "../../packages/testfiles");
 
 const FILE_CASES: { slug: string; label: string; file: string; keys: Record<string, string> }[] = [
-  { slug: "ext-vigenere", label: "c) Extended Vigenere (256 ASCII)", file: "contoh.png", keys: { key: "RAHASIA" } },
-  { slug: "super", label: "g) Super Enkripsi", file: "contoh.sqlite", keys: { key1: "RAHASIA", key2: "ZEBRAS" } },
+  { slug: "ext-vigenere", label: "Extended Vigenere (256 ASCII)", file: "contoh.png", keys: { key: "RAHASIA" } },
+  { slug: "super", label: "Super Enkripsi", file: "contoh.sqlite", keys: { key1: "RAHASIA", key2: "ZEBRAS" } },
 ];
 
 const CASES: Case[] = [
-  { slug: "vigenere", label: "a) Vigenere Standard", text: "SERANG SUBUH SEKALI", keys: { key: "LEMON" } },
-  { slug: "autokey", label: "b) Auto-Key Vigenere", text: "SERANG SUBUH SEKALI", keys: { key: "QUEENLY" } },
-  { slug: "ext-vigenere", label: "c) Extended Vigenere (256 ASCII)", text: "Serang subuh! 123", keys: { key: "RAHASIA" } },
-  { slug: "playfair", label: "d) Playfair", text: "TEMUI SAYA DI JEMBATAN", keys: { key: "MONARCHY" } },
-  { slug: "affine", label: "e) Affine", text: "SERANG SUBUH SEKALI", keys: { a: "5", b: "8" } },
-  { slug: "hill", label: "f) Hill", text: "SERANG SUBUH SEKALI", keys: { matrix: "6,24,1;13,16,10;20,17,15" } },
-  { slug: "columnar", label: "Transposisi Kolom (bagian g)", text: "SERANG SUBUH SEKALI", keys: { key: "ZEBRAS" } },
-  { slug: "super", label: "g) Super Enkripsi", text: "SERANG SUBUH SEKALI", keys: { key1: "RAHASIA", key2: "ZEBRAS" } },
+  { slug: "vigenere", label: "Vigenere Standard", text: "SERANG SUBUH SEKALI", keys: { key: "LEMON" } },
+  { slug: "autokey", label: "Auto-Key Vigenere", text: "SERANG SUBUH SEKALI", keys: { key: "QUEENLY" } },
+  { slug: "ext-vigenere", label: "Extended Vigenere (256 ASCII)", text: "Serang subuh! 123", keys: { key: "RAHASIA" } },
+  { slug: "playfair", label: "Playfair", text: "TEMUI SAYA DI JEMBATAN", keys: { key: "MONARCHY" } },
+  { slug: "affine", label: "Affine", text: "SERANG SUBUH SEKALI", keys: { a: "5", b: "8" } },
+  { slug: "hill", label: "Hill", text: "SERANG SUBUH SEKALI", keys: { matrix: "6,24,1;13,16,10;20,17,15" } },
+  { slug: "columnar", label: "Transposisi Kolom", text: "SERANG SUBUH SEKALI", keys: { key: "ZEBRAS" } },
+  { slug: "super", label: "Super Enkripsi", text: "SERANG SUBUH SEKALI", keys: { key1: "RAHASIA", key2: "ZEBRAS" } },
   {
     slug: "enigma",
-    label: "h) Enigma (Bonus)",
+    label: "Enigma (Bonus)",
     text: "KRIPTOGRAFI",
     keys: { rotors: "I,II,III", ring: "AAA", position: "AAA", plugboard: "" },
   },
@@ -83,10 +83,8 @@ async function main() {
   for (const c of CASES) {
     await page.goto(BASE, { waitUntil: "networkidle", timeout: 60_000 });
 
-    // 1) pilih cipher lewat dropdown Radix
-    await page.click('[aria-label="Pilih cipher"]');
-    await page.waitForTimeout(300);
-    await page.click(`[role="option"]:has-text("${c.label}")`);
+    // 1) pilih cipher lewat chip (radiogroup, tanpa dropdown)
+    await page.getByRole("radio", { name: c.label, exact: true }).click();
     await page.waitForTimeout(600);
 
     // 2) isi kunci — <input> teks atau <select> Radix (Affine "a")
@@ -148,9 +146,7 @@ async function main() {
 
     await page.goto(BASE, { waitUntil: "networkidle", timeout: 60_000 });
 
-    await page.click('[aria-label="Pilih cipher"]');
-    await page.waitForTimeout(300);
-    await page.click(`[role="option"]:has-text("${fc.label}")`);
+    await page.getByRole("radio", { name: fc.label, exact: true }).click();
     await page.waitForTimeout(600);
 
     for (const [k, v] of Object.entries(fc.keys)) {
@@ -198,6 +194,20 @@ async function main() {
       png: outFile,
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // Halaman /docs: panduan pemakaian + pemetaan huruf soal a-h.
+  // Screenshot ini bukan bagian dari 11 kasus R1/R2, jadi tidak dihitung di
+  // ringkasan kelulusan; hanya bukti tambahan untuk laporan.
+  // ---------------------------------------------------------------------------
+  await page.goto(`${BASE}docs`, { waitUntil: "networkidle", timeout: 60_000 });
+  await page.waitForTimeout(600);
+  const docsFile = path.join(OUT, "ui-docs.png");
+  await page.screenshot({ path: docsFile, fullPage: true });
+  const docsRows = await page.evaluate(
+    () => document.querySelectorAll("table tbody tr").length,
+  );
+  console.log(`[OK] halaman /docs -> ${docsRows} baris tabel cipher`);
 
   const summary = path.join(OUT, "screenshots.json");
   fs.writeFileSync(summary, JSON.stringify(report, null, 2));

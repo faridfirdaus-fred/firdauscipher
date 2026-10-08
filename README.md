@@ -223,7 +223,12 @@ jadi bisa dipakai sebagai pemeriksaan cepat sebelum presentasi atau di CI.
 
 ## Cara memakai aplikasi
 
-1. **Pilih cipher** dari dropdown di bagian atas (a–h).
+Semua langkah ada di **satu halaman**: pilih cipher, pilih mode, isi kunci, lalu
+jalankan. Daftar cipher berupa tombol (chip) yang semuanya terlihat sekaligus,
+jadi cukup satu klik. Nama cipher ditampilkan apa adanya; huruf soal (a–h) tidak
+dipakai di antarmuka, pemetaannya ada di halaman **Docs**.
+
+1. **Pilih cipher** pada daftar chip di bagian atas.
 2. **Pilih mode**: **Mode Teks** atau **Mode File**.
 3. Isi **kunci/parameter** (nilai default sudah terisi contoh).
 4. **Mode Teks** — tempel plaintext → klik **Enkripsi** (atau **Dekripsi**).
@@ -232,9 +237,10 @@ jadi bisa dipakai sebagai pemeriksaan cepat sebelum presentasi atau di CI.
    Untuk mengembalikan, buka tab **Dekripsi File (.dat)**, pilih file `.dat`,
    lalu **Dekripsi & Unduh File Asli**.
 
-**Cipher mana untuk file?** Gunakan cipher **biner** (c, g) untuk file seperti
-gambar/audio/video/database. Cipher **26 huruf** (a, b, d, e, f, h) hanya
-memproses huruf dan **akan merusak file biner** — itu perilaku yang benar,
+**Cipher mana untuk file?** Gunakan cipher **biner** (Extended Vigenere, Super
+Enkripsi, Transposisi Kolom) untuk file seperti gambar/audio/video/database.
+Cipher **26 huruf** (Vigenere, Auto-Key, Playfair, Affine, Hill, Enigma) hanya
+memproses huruf dan **akan merusak file biner**, itu perilaku yang benar,
 bukan bug.
 
 ### Format file `.dat`

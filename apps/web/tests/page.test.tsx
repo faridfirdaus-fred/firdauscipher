@@ -3,8 +3,8 @@
  * page.test.tsx — uji halaman utama (S16).
  *
  * Verifikasi S16: "semua tab bisa diklik, tidak ada error console".
- * Halaman asli (`src/app/page.tsx`) dirender, tiap cipher dipilih lewat
- * dropdown, dan console diintip supaya error apa pun langsung terlihat.
+ * Halaman asli (`src/app/page.tsx`) dirender, tiap cipher dipilih lewat daftar
+ * chip, dan console diintip supaya error apa pun langsung terlihat.
  */
 
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
@@ -46,31 +46,38 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-/** Pilih cipher lewat dropdown (Radix Select). */
-async function pilihCipher(user: ReturnType<typeof userEvent.setup>, label: string) {
-  await user.click(screen.getByRole("combobox", { name: /Pilih cipher/i }));
-  const option = await screen.findByRole("option", { name: label });
-  await user.click(option);
+/** Pilih cipher lewat daftar chip (radiogroup). */
+async function pilihCipher(user: ReturnType<typeof userEvent.setup>, name: string) {
+  await user.click(screen.getByRole("radio", { name }));
 }
 
 describe("S16 — halaman utama", () => {
-  it("menampilkan judul, pemilih cipher, dan dua mode (teks/file)", () => {
+  it("menampilkan judul, daftar cipher, dan dua mode (teks/file)", () => {
     render(<Home />);
-    expect(screen.getByRole("heading", { name: "FirdausCipher" })).toBeTruthy();
-    expect(screen.getByRole("combobox", { name: /Pilih cipher/i })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /Enkripsi & dekripsi cipher klasik/i })).toBeTruthy();
+    expect(screen.getByRole("radiogroup", { name: /Pilih cipher/i })).toBeTruthy();
     expect(screen.getByRole("tab", { name: "Mode Teks" })).toBeTruthy();
     expect(screen.getByRole("tab", { name: "Mode File" })).toBeTruthy();
   });
 
-  it("dropdown berisi seluruh cipher dari registry", async () => {
-    const user = userEvent.setup();
+  it("daftar cipher berisi seluruh cipher dari registry, tanpa dropdown", async () => {
     render(<Home />);
-    await user.click(screen.getByRole("combobox", { name: /Pilih cipher/i }));
+
     for (const c of CIPHERS) {
       expect(
-        await screen.findByRole("option", { name: cipherLabel(c) }),
-        `opsi ${c.slug} tidak ada`,
+        screen.getByRole("radio", { name: cipherLabel(c) }),
+        `pilihan ${c.slug} tidak ada`,
       ).toBeTruthy();
+    }
+
+    // Tidak boleh ada dropdown pemilih cipher lagi.
+    expect(screen.queryByRole("combobox", { name: /Pilih cipher/i })).toBeNull();
+  });
+
+  it("nama cipher di UI tidak memakai huruf soal (a-h)", () => {
+    for (const c of CIPHERS) {
+      expect(cipherLabel(c)).not.toMatch(/^[a-h]\)/);
+      expect(cipherLabel(c)).not.toMatch(/bagian [a-h]/);
     }
   });
 
@@ -110,7 +117,7 @@ describe("S16 — halaman utama", () => {
   it("Enigma menampilkan konfigurasi rotornya, bukan kolom kunci biasa", async () => {
     const user = userEvent.setup();
     render(<Home />);
-    await pilihCipher(user, "h) Enigma (Bonus)");
+    await pilihCipher(user, "Enigma (Bonus)");
 
     await waitFor(() => {
       expect(screen.getByLabelText(/Rotor \(kiri-tengah-kanan\)/i)).toBeTruthy();
@@ -126,7 +133,7 @@ describe("S16 — halaman utama", () => {
   it("Hill menampilkan kolom matriks kunci", async () => {
     const user = userEvent.setup();
     render(<Home />);
-    await pilihCipher(user, "f) Hill");
+    await pilihCipher(user, "Hill");
 
     await waitFor(() => expect(screen.getByLabelText(/Matriks kunci/i)).toBeTruthy());
   });

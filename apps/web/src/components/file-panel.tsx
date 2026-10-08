@@ -13,7 +13,7 @@ import { CheckCircle2, Download, FileUp, Info, Loader2, Lock, Unlock } from "luc
 import * as React from "react";
 
 import { KeyFields } from "@/components/key-fields";
-import { Alert, Badge } from "@/components/ui/feedback";
+import { Alert } from "@/components/ui/feedback";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -162,19 +162,7 @@ export function FilePanel({ slug }: { slug: string }) {
 
   return (
     <div className="grid gap-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Badge>{cipher.componentOf ? `bagian ${cipher.componentOf}` : cipher.letter}</Badge>
-            {cipher.name}
-            {cipher.isAlpha ? <Badge className="border-amber-500/50 text-amber-700">26 huruf</Badge> : <Badge>256 byte</Badge>}
-          </CardTitle>
-          <CardDescription>{cipher.description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <KeyFields fields={cipher.keyFields} values={params} onChange={onParam} disabled={busy} />
-        </CardContent>
-      </Card>
+      <KeyFields fields={cipher.keyFields} values={params} onChange={onParam} disabled={busy} />
 
       <Tabs defaultValue="encrypt">
         <TabsList>
@@ -197,7 +185,7 @@ export function FilePanel({ slug }: { slug: string }) {
                 <FileUp className="h-6 w-6 text-muted-foreground" />
                 <span className="text-sm font-medium">Pilih file apa pun (teks, gambar, database, audio, video)</span>
                 <span className="text-xs text-muted-foreground">
-                  Maksimum {formatBytes(MAX_FILE_SIZE)} — dibaca byte-per-byte, bukan sebagai teks
+                  Maksimum {formatBytes(MAX_FILE_SIZE)}, dibaca byte-per-byte (bukan sebagai teks)
                 </span>
                 <input
                   id="file-input"

@@ -12,7 +12,7 @@ import { ArrowLeftRight, Copy, Download, Loader2, Wand2 } from "lucide-react";
 import * as React from "react";
 
 import { KeyFields } from "@/components/key-fields";
-import { Badge, Alert } from "@/components/ui/feedback";
+import { Alert } from "@/components/ui/feedback";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label, Textarea } from "@/components/ui/input";
@@ -91,15 +91,7 @@ export function TextPanel({ slug }: { slug: string }) {
 
   return (
     <div className="grid gap-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Badge>{cipher.componentOf ? `bagian ${cipher.componentOf}` : cipher.letter}</Badge>
-            {cipher.name}
-          </CardTitle>
-          <CardDescription>{cipher.description}</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
+      <div className="grid gap-4">
           <KeyFields fields={cipher.keyFields} values={params} onChange={onParam} disabled={busy} />
 
           <div className="grid gap-2">
@@ -150,21 +142,23 @@ export function TextPanel({ slug }: { slug: string }) {
               {error}
             </Alert>
           ) : null}
-        </CardContent>
-      </Card>
+      </div>
 
       {result ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               Hasil
-              <span data-testid="result-kind">
-                {result.isBinary ? <Badge>base64</Badge> : <Badge>teks</Badge>}
+              <span
+                data-testid="result-kind"
+                className="text-xs font-normal text-muted-foreground"
+              >
+                {result.isBinary ? "base64" : "teks"}
               </span>
             </CardTitle>
             <CardDescription>
               {result.bytes.length.toLocaleString("id-ID")} byte keluaran
-              {result.isBinary ? " — ditampilkan base64 (Sp4)" : ""}
+              {result.isBinary ? ", ditampilkan sebagai base64 (Sp4)" : ""}
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3">

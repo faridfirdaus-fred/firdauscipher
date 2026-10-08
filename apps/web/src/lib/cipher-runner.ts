@@ -81,7 +81,7 @@ export function runText(
     const dropped = countNonAlpha(text);
     if (dropped > 0) {
       warnings.push(
-        `${dropped} karakter non-alfabet (spasi, angka, tanda baca) dibuang — ` +
+        `${dropped} karakter non-alfabet (spasi, angka, tanda baca) dibuang, ` +
           `cipher 26 huruf hanya memproses A-Z (Sp2).`,
       );
     }
@@ -173,7 +173,7 @@ export function runFileDecrypt(datBytes: Uint8Array): FileDecryptResult {
   const params = (env.header.params ?? {}) as CipherParams;
   if (Object.keys(params).length === 0) {
     warnings.push(
-      "File .dat ini tidak menyimpan parameter kunci. Kunci default akan dipakai — " +
+      "File .dat ini tidak menyimpan parameter kunci. Kunci default akan dipakai. " +
         "kalau hasilnya tidak terbaca, kunci yang benar tidak bisa dipulihkan dari file.",
     );
   }

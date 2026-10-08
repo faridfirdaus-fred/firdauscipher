@@ -1,7 +1,7 @@
 [
   {
     "slug": "vigenere",
-    "label": "a) Vigenere Standard",
+    "label": "Vigenere Standard",
     "plaintext": "SERANG SUBUH SEKALI",
     "keys": {
       "key": "LEMON"
@@ -13,7 +13,7 @@
   },
   {
     "slug": "autokey",
-    "label": "b) Auto-Key Vigenere",
+    "label": "Auto-Key Vigenere",
     "plaintext": "SERANG SUBUH SEKALI",
     "keys": {
       "key": "QUEENLY"
@@ -25,7 +25,7 @@
   },
   {
     "slug": "ext-vigenere",
-    "label": "c) Extended Vigenere (256 ASCII)",
+    "label": "Extended Vigenere (256 ASCII)",
     "plaintext": "Serang subuh! 123",
     "keys": {
       "key": "RAHASIA"
@@ -37,7 +37,7 @@
   },
   {
     "slug": "playfair",
-    "label": "d) Playfair",
+    "label": "Playfair",
     "plaintext": "TEMUI SAYA DI JEMBATAN",
     "keys": {
       "key": "MONARCHY"
@@ -49,7 +49,7 @@
   },
   {
     "slug": "affine",
-    "label": "e) Affine",
+    "label": "Affine",
     "plaintext": "SERANG SUBUH SEKALI",
     "keys": {
       "a": "5",
@@ -62,7 +62,7 @@
   },
   {
     "slug": "hill",
-    "label": "f) Hill",
+    "label": "Hill",
     "plaintext": "SERANG SUBUH SEKALI",
     "keys": {
       "matrix": "6,24,1;13,16,10;20,17,15"
@@ -74,7 +74,7 @@
   },
   {
     "slug": "columnar",
-    "label": "Transposisi Kolom (bagian g)",
+    "label": "Transposisi Kolom",
     "plaintext": "SERANG SUBUH SEKALI",
     "keys": {
       "key": "ZEBRAS"
@@ -86,7 +86,7 @@
   },
   {
     "slug": "super",
-    "label": "g) Super Enkripsi",
+    "label": "Super Enkripsi",
     "plaintext": "SERANG SUBUH SEKALI",
     "keys": {
       "key1": "RAHASIA",
@@ -99,7 +99,7 @@
   },
   {
     "slug": "enigma",
-    "label": "h) Enigma (Bonus)",
+    "label": "Enigma (Bonus)",
     "plaintext": "KRIPTOGRAFI",
     "keys": {
       "rotors": "I,II,III",
@@ -115,7 +115,7 @@
   {
     "mode": "file",
     "slug": "ext-vigenere",
-    "label": "c) Extended Vigenere (256 ASCII)",
+    "label": "Extended Vigenere (256 ASCII)",
     "file": "contoh.png",
     "keys": {
       "key": "RAHASIA"
@@ -127,7 +127,7 @@
   {
     "mode": "file",
     "slug": "super",
-    "label": "g) Super Enkripsi",
+    "label": "Super Enkripsi",
     "file": "contoh.sqlite",
     "keys": {
       "key1": "RAHASIA",

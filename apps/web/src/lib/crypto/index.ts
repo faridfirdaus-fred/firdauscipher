@@ -75,7 +75,7 @@ function need(params: CipherParams, name: string, label?: string): string {
   const v = params[name];
   if (v === undefined || v.trim() === "") {
     throw new Error(
-      `Kunci "${label ?? name}" wajib diisi — isi dulu kolomnya sebelum memproses.`,
+      `Kunci "${label ?? name}" wajib diisi, isi dulu kolomnya sebelum memproses.`,
     );
   }
   return v;
@@ -166,14 +166,22 @@ export function runCipher(
   }
 }
 
-/** Label tampilan satu cipher.
+/** Nama tampilan satu cipher di antarmuka.
  *
- * Item biasa  -> "g) Super Enkripsi"
- * Cipher komponen (bagian dari cipher lain) -> "Transposisi Kolom (bagian g)"
- *
- * Dipakai semua komponen UI supaya penomoran huruf konsisten satu sumber.
+ * UI sengaja TIDAK menampilkan huruf soal (a-h): huruf itu hanya berguna untuk
+ * mencocokkan dengan lembar soal, bukan untuk pengguna. Pemetaan huruf tetap
+ * tersimpan di registry (`letter`) dan ditampilkan di halaman /docs.
  */
 export function cipherLabel(c: CipherDef): string {
+  return c.name;
+}
+
+/** Nama + huruf soal, mis. "g) Super Enkripsi".
+ *
+ * HANYA untuk halaman dokumentasi supaya penguji bisa mencocokkan dengan soal.
+ * Jangan dipakai di antarmuka utama.
+ */
+export function cipherLabelWithLetter(c: CipherDef): string {
   return c.componentOf ? `${c.name} (bagian ${c.componentOf})` : `${c.letter}) ${c.name}`;
 }
 

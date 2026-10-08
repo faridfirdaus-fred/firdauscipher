@@ -199,7 +199,10 @@ def bab1() -> str:
   <h3 class="h3">1.4 Fitur Utama</h3>
   <ul class="list">
     <li><b>Delapan cipher klasik</b> (a–h) lengkap dengan enkripsi dan dekripsi.</li>
-    <li><b>Dua mode masukan</b>: Mode Teks (diketik) dan Mode File (semua byte).</li>
+    <li><b>Dua mode masukan</b>: Mode Teks (diketik) dan Mode File (semua byte),
+        dalam satu alur tanpa berpindah halaman.</li>
+    <li><b>Antarmuka satu halaman</b> dengan daftar cipher berbentuk chip, serta
+        halaman <i>Docs</i> berisi panduan pemakaian dan pemetaan huruf soal.</li>
     <li><b>Envelope <code>.dat</code></b> (format KRI1) yang menyimpan nama asli,
         tipe MIME, dan jenis cipher, sehingga hasil dekripsi kembali menjadi file
         dengan nama dan ekstensi semula.</li>
@@ -241,6 +244,23 @@ def bab2(sc) -> str:
   bukan diambil manual. Dengan cara ini bukti R1 dapat diulang dan diverifikasi
   kapan saja. Nilai "Hasil" pada tiap keterangan adalah keluaran nyata yang
   dibaca langsung dari elemen halaman saat screenshot diambil.</p>
+
+  <h3 class="h3">2.0 Rancangan Antarmuka</h3>
+  <ul class="list">
+    <li><b>Satu halaman, satu alur.</b> Memilih cipher, memilih mode, mengisi
+        kunci, dan menjalankan semuanya berada dalam satu kartu, sehingga
+        pengguna tidak berpindah-pindah tempat.</li>
+    <li><b>Daftar cipher berupa chip.</b> Semua cipher terlihat sekaligus dan
+        cukup satu klik untuk memilih, tanpa dropdown tersembunyi.</li>
+    <li><b>Huruf soal tidak dipakai di antarmuka.</b> Cipher ditampilkan dengan
+        namanya (mis. <i>Vigenere Standard</i>). Pemetaan huruf a–h tetap
+        tersedia di halaman <i>Docs</i> untuk mencocokkan dengan lembar soal.</li>
+    <li><b>Navigasi tetap.</b> Bilah atas berisi nama aplikasi, tautan
+        <i>Home</i> dan <i>Docs</i>, serta tombol menuju repositori GitHub;
+        footer memuat akun pemilik repositori.</li>
+    <li><b>Tanpa badge yang mengganggu.</b> Keterangan penting (mis. hasil
+        ditampilkan sebagai base64) disampaikan sebagai teks biasa.</li>
+  </ul>
 """]
 
     parts.append('<h3 class="h3">2.1 Antarmuka Enkripsi Teks (9 Cipher)</h3>')
@@ -250,6 +270,23 @@ def bab2(sc) -> str:
     parts.append('<h3 class="h3">2.2 Antarmuka Enkripsi File (.dat)</h3>')
     for e in fl:
         parts.append(card(e, e["label"], f"file: {e.get('file')} → {e.get('output')}"))
+
+    # 2.3 Halaman dokumentasi (panduan pemakaian + pemetaan huruf soal)
+    docs_png = os.path.join(SHOT, "ui-docs.png")
+    if os.path.exists(docs_png):
+        img = b64img(docs_png)
+        parts.append(f"""
+<h3 class="h3">2.3 Halaman Dokumentasi (<code>/docs</code>)</h3>
+<p>Halaman ini memuat panduan pemakaian singkat dan tabel pemetaan huruf soal
+(a–h) ke nama cipher, termasuk keterangan bahwa <b>Transposisi Kolom</b> adalah
+tahap kedua dari bagian <b>g</b>. Halaman ini sengaja dibuat agar antarmuka
+utama tetap bersih (tanpa huruf soal) namun pengguna tetap dapat mencocokkan
+pilihannya dengan lembar soal.</p>
+<figure class="shot">
+  <figcaption><b>Halaman Cara pakai</b> — panduan langkah singkat, perbedaan
+    mode teks dan file, serta tabel pemetaan huruf a–h.</figcaption>
+  <img src="{img}" alt="Halaman dokumentasi FirdausCipher">
+</figure>""")
 
     parts.append("</section>")
     return "".join(parts)
@@ -501,9 +538,9 @@ def bab6() -> str:
   {code("apps/web/src/lib/crypto/core.ts")}
 
   <h3 class="h3">6.4 Kode: Registry Cipher (index.ts)</h3>
-  <p>Daftar resmi cipher beserta huruf, jenis, dan parameternya. Antarmuka
-  (dropdown, lencana, validasi) dibangun dari daftar ini sehingga tidak ada
-  daftar cipher yang ditulis ulang di tempat lain.</p>
+  <p>Daftar resmi cipher beserta huruf soal, jenis, dan parameternya. Daftar
+  chip pada antarmuka, halaman dokumentasi, dan validasi semuanya dibangun dari
+  sumber ini sehingga tidak ada daftar cipher yang ditulis ulang di tempat lain.</p>
   {code("apps/web/src/lib/crypto/index.ts")}
 
   <h3 class="h3">6.5 Kode: Format Berkas .dat (envelope.ts)</h3>
@@ -541,9 +578,10 @@ cd apps/api
 bundle config set --local without "production lint"
 bundle install
 cd ../.. && pnpm api     # http://127.0.0.1:9292''')}</code></pre>
-  <p><b>Cara pakai:</b> pilih cipher (a–h) → pilih Mode Teks atau Mode File →
-  isi kunci → klik <i>Enkripsi</i> (atau <i>Enkripsi &amp; Unduh .dat</i> untuk
-  file). Untuk mengembalikan, gunakan tab <i>Dekripsi File (.dat)</i>.</p>
+  <p><b>Cara pakai:</b> pilih cipher pada daftar chip → pilih Mode Teks atau
+  Mode File → isi kunci → klik <i>Enkripsi</i> (atau <i>Enkripsi &amp; Unduh
+  .dat</i> untuk file). Untuk mengembalikan, gunakan tab <i>Dekripsi File
+  (.dat)</i>.</p>
   <p>Dokumentasi lengkap: <code>README.md</code> (root),
   <code>apps/web/README.md</code>, dan <code>apps/api/README.md</code>.</p>
 </section>

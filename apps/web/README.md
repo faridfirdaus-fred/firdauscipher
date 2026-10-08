@@ -94,13 +94,14 @@ scripts/                      (dijalankan dengan tsx)
 ├── demo.ts                 demo satu perintah (pnpm demo)
 ├── cross-verify.ts         bandingkan TS ↔ Ruby ↔ vektor acuan
 ├── roundtrip-test.ts       uji 5 kategori file (byte-identik)
-└── screenshots.ts          ambil screenshot antarmuka
+├── screenshots.ts          ambil screenshot antarmuka
+└── audit-layout.ts         periksa tata letak (overflow, jarak, tumpang tindih)
 ```
 
 **Poin penting:** `src/lib/crypto/index.ts` adalah satu-satunya sumber kebenaran
-daftar cipher. Untuk menambah cipher, tambahkan entri di `CIPHERS` — dropdown,
-badge, dan validasi ikut menyesuaikan otomatis (label dibuat oleh `cipherLabel()`,
-jangan di-hardcode di komponen).
+daftar cipher. Untuk menambah cipher, tambahkan entri di `CIPHERS` — daftar chip
+pada halaman utama, tabel di halaman `/docs`, dan validasi ikut menyesuaikan
+otomatis (label dibuat oleh `cipherLabel()`, jangan di-hardcode di komponen).
 
 ---
 

@@ -267,7 +267,7 @@ export function invertMatrixMod(matrix: Matrix, m: number): Matrix {
 /** Pastikan matriks persegi dan tidak kosong. */
 export function assertSquare(matrix: Matrix): void {
   const n = matrix.length;
-  if (n === 0) throw new Error("Matriks kosong — isi dulu matriks kuncinya.");
+  if (n === 0) throw new Error("Matriks kosong, isi dulu matriks kuncinya.");
   matrix.forEach((row, i) => {
     if (row.length !== n) {
       throw new Error(

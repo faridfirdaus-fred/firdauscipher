@@ -14,7 +14,8 @@
     "demo": "tsx scripts/demo.ts",
     "roundtrip": "tsx scripts/roundtrip-test.ts",
     "cross-verify": "tsx scripts/cross-verify.ts",
-    "screenshots": "tsx scripts/screenshots.ts"
+    "screenshots": "tsx scripts/screenshots.ts",
+    "audit:layout": "tsx scripts/audit-layout.ts"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
