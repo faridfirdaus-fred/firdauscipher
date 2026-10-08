@@ -17,6 +17,14 @@ pnpm install
 pnpm dev                       # http://localhost:3000
 ```
 
+### Offline
+
+Setelah `pnpm install` sekali, seluruh proses berikut **tidak butuh internet**:
+`pnpm build`, `pnpm dev`, `pnpm start`, dan pemakaian aplikasi. Tidak ada CDN
+maupun panggilan API luar — kriptografi dihitung di browser. Font memakai font
+**sistem** (bukan `next/font/google`) justru agar `pnpm build` tetap sukses
+tanpa jaringan (mis. saat demo di kelas tanpa wifi).
+
 Atau dari folder ini:
 
 ```bash

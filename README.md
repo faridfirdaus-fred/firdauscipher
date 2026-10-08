@@ -98,6 +98,28 @@ Tiga kolom harus sama — sehingga tidak mungkin kedua implementasi "sama-sama s
 Hanya **Node.js + pnpm** yang dibutuhkan untuk memakai aplikasi web. Ruby
 diperlukan hanya untuk menjalankan/menguji backend.
 
+### Bisa jalan offline (tanpa internet)?
+
+**Ya — sepenuhnya offline**, setelah dependensi terpasang sekali. Tidak ada
+CDN, tidak ada panggilan API luar, tidak ada font Google: seluruh kriptografi
+dihitung di browser/Node sendiri, dan halaman memakai font sistem.
+
+| Tahap | Butuh internet? |
+|---|---|
+| `pnpm install` (sekali di awal) | **Ya** (unduh paket) |
+| `pnpm build`, `pnpm dev`, `pnpm api` | **Tidak** |
+| Memakai aplikasi (enkripsi/dekripsi, mode file) | **Tidak** |
+| `pnpm test`, `pnpm cross-verify` | **Tidak** |
+
+Sudah diuji dengan jaringan dimatikan (`bwrap --unshare-net`): build sukses,
+aplikasi melayani halaman (HTTP 200) dan enkripsi Vigenere menghasilkan
+`didoarwgphswqynwm` tanpa satu pun permintaan keluar. Cocok untuk demo di
+kelas tanpa wifi.
+
+> **Catatan (S31):** sebelumnya aplikasi memakai `next/font/google` (Geist)
+> sehingga `pnpm build` **gagal** tanpa internet. Sudah diganti ke font sistem
+> agar aman saat demo offline.
+
 ---
 
 ## Menjalankan dari nol

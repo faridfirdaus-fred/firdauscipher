@@ -584,6 +584,29 @@ def bab7() -> str:
   <p>Perhitungan cipher (termasuk file besar) dijalankan di <i>web worker</i>
   sehingga antarmuka tetap responsif dan tidak "membeku" saat memproses file
   berukuran besar.</p>
+
+  <h3 class="h3">7.6 Dapat Berjalan Sepenuhnya Offline</h3>
+  <p>Program dirancang agar dapat didemonstrasikan <b>tanpa koneksi internet</b>
+  — berguna untuk presentasi di kelas tanpa wifi. Tidak ada CDN, tidak ada
+  panggilan API luar, dan tidak ada font daring: seluruh kriptografi dihitung
+  di dalam peramban, sedangkan halaman memakai font sistem.</p>
+  <p>Hal ini <b>diuji secara nyata</b> dengan mematikan jaringan pada tingkat
+  sistem operasi (<code>bwrap --unshare-net</code>), bukan sekadar diperiksa
+  dari kode:</p>
+  <table class="tbl keep">
+    <tr><th>Yang diuji (jaringan mati)</th><th>Hasil</th></tr>
+    <tr><td><code>pnpm build</code> (produksi)</td><td class="ok">Berhasil ✓</td></tr>
+    <tr><td>Aplikasi melayani halaman (<code>pnpm start</code>)</td><td class="ok">HTTP 200 ✓</td></tr>
+    <tr><td>Enkripsi Vigenere di peramban</td><td class="ok">didoarwgphswqynwm ✓</td></tr>
+    <tr><td>Dekripsi mengembalikan teks semula</td><td class="ok">serangsubuhsekali ✓</td></tr>
+    <tr><td>Permintaan keluar ke internet</td><td class="ok">0 (tidak ada) ✓</td></tr>
+    <tr><td>REST API Ruby (<code>/health</code>, encrypt/decrypt)</td><td class="ok">Berhasil ✓</td></tr>
+    <tr><td>Skrip screenshot (bukti R1)</td><td class="ok">11/11 ✓</td></tr>
+  </table>
+  <p class="note">Sebelumnya aplikasi memakai <code>next/font/google</code>
+  (Geist) sehingga <code>pnpm build</code> <b>gagal</b> saat tidak ada internet.
+  Font tersebut diganti ke tumpukan font sistem agar aman saat demo offline;
+  seluruh 254 tes TypeScript dan 127 tes Ruby tetap lulus setelah perubahan.</p>
 </section>
 """
 
@@ -736,6 +759,8 @@ table.tbl th { background: #0b3d6b; color: #fff; text-align: left;
                font-size: 9pt; }
 table.tbl td { border: 1px solid #c8d2dc; padding: 4px 6px; vertical-align: top; }
 table.tbl tr:nth-child(even) td { background: #f7f9fb; }
+table.tbl tr { page-break-inside: avoid; }
+table.keep { page-break-inside: avoid; }
 .ctr { text-align: center; }
 .num { text-align: right; white-space: nowrap; }
 .ok { color: #0a7a2f; font-weight: bold; }
