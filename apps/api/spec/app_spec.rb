@@ -269,6 +269,8 @@ RSpec.describe FirdausCipher::App do
       expect(last_response.headers["Content-Type"]).to include("text/html")
       expect(last_response.body).to include("FirdausCipher")
       expect(last_response.body).to include("Vigenere Standard")
+      expect(last_response.body).to match(/<textarea name="input_text" id="input"/)
+      expect(last_response.body).not_to include('type="hidden" name="input_text"')
     end
 
     it "POST /gui memproses teks biasa dan menampilkan hasil" do

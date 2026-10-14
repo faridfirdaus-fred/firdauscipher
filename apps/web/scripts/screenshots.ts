@@ -77,7 +77,8 @@ async function main() {
     executablePath: CHROME,
     args: ["--no-sandbox", "--disable-dev-shm-usage"],
   });
-  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  // Bukti laporan diambil ulang dalam kanvas Full HD 16:9 sesuai instruksi.
+  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   const report: Record<string, unknown>[] = [];
 
   for (const c of CASES) {
@@ -126,7 +127,7 @@ async function main() {
     });
 
     const file = path.join(OUT, `ui-${c.slug}.png`);
-    await page.screenshot({ path: file, fullPage: true });
+    await page.screenshot({ path: file });
 
     const status = got.error ? "GAGAL" : got.output ? "OK" : "KOSONG";
     console.log(`[${status}] ${c.label} -> ${got.kind ?? "-"} ${(got.output ?? got.error ?? "").slice(0, 60)}`);
@@ -179,7 +180,7 @@ async function main() {
     });
 
     const outFile = path.join(OUT, `file-${fc.slug}-${path.parse(fc.file).name}.png`);
-    await page.screenshot({ path: outFile, fullPage: true });
+    await page.screenshot({ path: outFile });
 
     const status = got.error ? "GAGAL" : got.output ? "OK" : "KOSONG";
     console.log(`[${status}] FILE ${fc.file} (${fc.label}) -> ${got.output ?? got.error ?? "-"}`);
@@ -203,7 +204,7 @@ async function main() {
   await page.goto(`${BASE}docs`, { waitUntil: "networkidle", timeout: 60_000 });
   await page.waitForTimeout(600);
   const docsFile = path.join(OUT, "ui-docs.png");
-  await page.screenshot({ path: docsFile, fullPage: true });
+  await page.screenshot({ path: docsFile });
   const docsRows = await page.evaluate(
     () => document.querySelectorAll("table tbody tr").length,
   );

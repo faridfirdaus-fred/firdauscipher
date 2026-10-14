@@ -22,6 +22,10 @@ next-env.d.ts
 *.gem
 Gemfile.lock.bak
 
+# ---- Python ----
+__pycache__/
+*.py[cod]
+
 # ---- Test & coverage ----
 coverage/
 .nyc_output/
