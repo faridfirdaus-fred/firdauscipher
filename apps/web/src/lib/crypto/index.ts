@@ -43,6 +43,8 @@ export interface KeyField {
   help?: string;
   defaultValue?: string;
   options?: { value: string; label: string }[];
+  /** Khusus tipe "matrix": ukuran yang boleh dipilih GUI (mis. [2, 3]). */
+  sizes?: number[];
 }
 
 /** Metadata satu cipher. */
@@ -259,9 +261,10 @@ export const CIPHERS: CipherDef[] = [
         name: "matrix",
         label: "Matriks kunci",
         type: "matrix",
+        sizes: [2, 3],
         defaultValue: "6,24,1;13,16,10;20,17,15",
         placeholder: "6,24,1;13,16,10;20,17,15",
-        help: "Pisahkan elemen dengan koma, baris dengan titik-koma (2x2 atau 3x3).",
+        help: "Pilih ukuran, lalu isi tiap sel. Determinan harus koprima dengan 26.",
       },
     ],
   },

@@ -130,11 +130,15 @@ describe("S16 — halaman utama", () => {
     expect(screen.getByRole("combobox", { name: /Reflector/i })).toBeTruthy();
   });
 
-  it("Hill menampilkan kolom matriks kunci", async () => {
+  it("Hill menampilkan grid matriks kunci (bukan satu kolom teks)", async () => {
     const user = userEvent.setup();
     render(<Home />);
     await pilihCipher(user, "Hill");
 
-    await waitFor(() => expect(screen.getByLabelText(/Matriks kunci/i)).toBeTruthy());
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "2×2" })).toBeTruthy();
+      expect(screen.getByRole("button", { name: "3×3" })).toBeTruthy();
+      expect(screen.getByLabelText(/Matriks kunci baris 1 kolom 1/i)).toBeTruthy();
+    });
   });
 });

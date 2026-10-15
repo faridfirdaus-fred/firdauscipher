@@ -27,6 +27,23 @@ const output = () => screen.getByTestId("result-output") as HTMLTextAreaElement;
 /** Semua pesan Alert (peringatan/error) sebagai satu string. */
 const alerts = () => screen.queryAllByRole("alert").map((n) => n.textContent ?? "").join(" | ");
 
+/** Pilih ukuran matriks Hill (mis. "2×2") lewat tombol ukuran. */
+async function pilihUkuran(user: ReturnType<typeof userEvent.setup>, label: string) {
+  await user.click(screen.getByRole("button", { name: label }));
+}
+
+/** Isi satu sel grid matriks: baris & kolom 1-indexed. */
+async function isiSel(
+  user: ReturnType<typeof userEvent.setup>,
+  baris: number,
+  kolom: number,
+  nilai: string,
+) {
+  const sel = screen.getByLabelText(new RegExp(`Matriks kunci baris ${baris} kolom ${kolom}`, "i"));
+  await user.clear(sel);
+  await user.type(sel, nilai);
+}
+
 describe("TextPanel — enkripsi/dekripsi teks lewat GUI", () => {
   it("Auto-Key Vigenere: ATTACKATDAWN + QUEENLY -> QNXEPVYTWTWP (vektor buku)", async () => {
     const user = userEvent.setup();
@@ -81,13 +98,15 @@ describe("TextPanel — enkripsi/dekripsi teks lewat GUI", () => {
     await waitFor(() => expect(output().value).toBe("gatlmzclrqxa"));
   });
 
-  it("Hill: matriks 2x2 diketik lewat GUI, HELP -> hiat", async () => {
+  it("Hill: matriks 2x2 diisi lewat grid, HELP -> hiat", async () => {
     const user = userEvent.setup();
     render(<TextPanel slug="hill" />);
 
-    const matrix = screen.getByLabelText(/Matriks kunci/i);
-    await user.clear(matrix);
-    await user.type(matrix, "3,3;2,5");
+    await pilihUkuran(user, "2×2");
+    await isiSel(user, 1, 1, "3");
+    await isiSel(user, 1, 2, "3");
+    await isiSel(user, 2, 1, "2");
+    await isiSel(user, 2, 2, "5");
 
     await user.type(screen.getByLabelText(/Plaintext/i), "HELP");
     await user.click(screen.getByRole("button", { name: "Enkripsi" }));
@@ -173,9 +192,11 @@ describe("TextPanel — enkripsi/dekripsi teks lewat GUI", () => {
     const user = userEvent.setup();
     render(<TextPanel slug="hill" />);
 
-    const matrix = screen.getByLabelText(/Matriks kunci/i);
-    await user.clear(matrix);
-    await user.type(matrix, "1,2;2,4"); // det = 0
+    await pilihUkuran(user, "2×2");
+    await isiSel(user, 1, 1, "1");
+    await isiSel(user, 1, 2, "2");
+    await isiSel(user, 2, 1, "2");
+    await isiSel(user, 2, 2, "4"); // det = 0
 
     await user.type(screen.getByLabelText(/Plaintext/i), "TEST");
     await user.click(screen.getByRole("button", { name: "Enkripsi" }));
