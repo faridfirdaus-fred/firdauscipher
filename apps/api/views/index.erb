@@ -21,6 +21,12 @@
     input[type=file] { width:100%; padding:.5rem; border-radius:8px; border:1px dashed #475569;
       background:#0b1220; color:var(--mut); font-size:.85rem; }
     h2 { font-size:1.05rem; margin:0 0 .35rem; }
+    .alert { border-radius:8px; padding:.6rem .75rem; font-size:.83rem; margin:.6rem 0 0;
+             border:1px solid; line-height:1.5; }
+    .alert.danger { border-color:#7f1d1d; background:rgba(248,113,113,.12); color:#fca5a5; }
+    .alert.danger strong { color:#f87171; }
+    .alert.ok { border-color:#14532d; background:rgba(74,222,128,.10); color:#86efac; }
+    .alert.ok strong { color:#4ade80; }
     .row { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
     button { padding:.6rem 1.1rem; border-radius:8px; border:0; background:var(--acc);
              color:#062033; font-weight:700; cursor:pointer; font-size:.9rem; }
@@ -84,6 +90,8 @@
         </option>
       <% end %>
     </select>
+
+    <div id="file-warn"></div>
 
     <div id="file-fields"></div>
 
@@ -172,6 +180,38 @@ curl -s -X POST http://127.0.0.1:9292/api/encrypt \
   const fInput = document.getElementById('file-input');
   const fGo = document.getElementById('file-go');
   const fStatus = document.getElementById('file-status');
+  const fWarn = document.getElementById('file-warn');
+
+  // Info/peringatan di atas form, berubah sesuai cipher & arah yang dipilih.
+  function renderFileWarning(def, direction) {
+    // Saat dekripsi, cipher dibaca dari header .dat -> pilihan cipher di atas
+    // tidak berpengaruh. Jadi cukup beri tahu, bukan peringatan.
+    if (direction === 'decrypt') {
+      fWarn.innerHTML =
+        '<div class="alert ok"><strong>Info:</strong> Saat dekripsi, cipher &amp; kunci ' +
+        'dibaca otomatis dari header berkas <code>.dat</code>. Pilihan cipher di atas ' +
+        'diabaikan.</div>';
+      return;
+    }
+    // Enkripsi: cipher 26 huruf hanya memproses A-Z, byte lain (header file,
+    // 0x00, gambar, audio) akan HILANG dan file TIDAK BISA dipulihkan.
+    if (def.isAlpha) {
+      fWarn.innerHTML =
+        '<div class="alert danger"><strong>Perhatian:</strong> ' +
+        `Cipher <em>${def.label}</em> hanya memproses huruf A–Z. Berkas biner ` +
+        '(gambar, audio, video, database) akan <strong>kehilangan semua byte ' +
+        'non-huruf</strong> termasuk header berkas, dan <strong>tidak bisa ' +
+        'dikembalikan seperti semula</strong>. Untuk berkas, pilih ' +
+        '<strong>c) Extended Vigenere</strong> atau <strong>g) Super Enkripsi / ' +
+        'Transposisi Kolom</strong>.</div>';
+      return;
+    }
+    // Cipher biner: aman untuk berkas apa pun.
+    fWarn.innerHTML =
+      '<div class="alert ok"><strong>Aman:</strong> ' +
+      `Cipher <em>${def.label}</em> memproses seluruh byte (0–255), sehingga ` +
+      'berkas apa pun bisa didekripsi kembali utuh.</div>';
+  }
 
   // Render field kunci khusus untuk cipher yang dipilih (dipakai saat enkripsi).
   function renderFileFields() {
@@ -194,6 +234,7 @@ curl -s -X POST http://127.0.0.1:9292/api/encrypt \
     });
     // Saat dekripsi, kunci dibaca dari header file .dat -> sembunyikan field.
     fFields.style.display = fDir.value === 'decrypt' ? 'none' : '';
+    renderFileWarning(def, fDir.value);
   }
 
   function collectFileParams() {

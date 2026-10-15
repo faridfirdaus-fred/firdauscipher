@@ -283,6 +283,16 @@ RSpec.describe FirdausCipher::App do
       expect(last_response.body).to include("'/api/decrypt-file'")
     end
 
+    it "GET / menandai cipher 26 huruf sebagai tidak aman untuk berkas biner" do
+      get "/"
+
+      # Wadah peringatan + logika pembeda cipher alfa vs biner ada di halaman.
+      expect(last_response.body).to include('id="file-warn"')
+      expect(last_response.body).to include("def.isAlpha")
+      expect(last_response.body).to include("hanya memproses huruf A–Z")
+      expect(last_response.body).to include("memproses seluruh byte")
+    end
+
     it "POST /gui memproses teks biasa dan menampilkan hasil" do
       post "/gui", {
         "cipher" => "vigenere", "direction" => "encrypt",
