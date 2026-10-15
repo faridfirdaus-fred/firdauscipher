@@ -157,9 +157,9 @@ module FirdausCipher
         def_entry("affine", "e", "Affine", "base64-text", true,
                   "E(x) = (a*x + b) mod 26. `a` wajib koprima dengan 26.",
                   [
-                    { "name" => "a", "label" => "a (koprima 26)", "type" => "select", "defaultValue" => "5",
+                    { "name" => "a", "label" => "a (kunci pengali, koprima 26)", "type" => "select", "defaultValue" => "5",
                       "options" => Affine::VALID_A.map { |v| { "value" => v.to_s, "label" => v.to_s } } },
-                    { "name" => "b", "label" => "b (0-25)", "type" => "number", "defaultValue" => "8" }
+                    { "name" => "b", "label" => "b (kunci geser, 0-25)", "type" => "number", "defaultValue" => "8" }
                   ]),
         def_entry("hill", "f", "Hill", "base64-text", true,
                   "Matriks kunci 2x2 atau 3x3, determinan wajib koprima 26. Padding X.",

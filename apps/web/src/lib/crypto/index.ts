@@ -238,12 +238,12 @@ export const CIPHERS: CipherDef[] = [
     keyFields: [
       {
         name: "a",
-        label: "a (koprima 26)",
+        label: "a (kunci pengali, koprima 26)",
         type: "select",
         defaultValue: "5",
         options: VALID_A.map((v) => ({ value: String(v), label: String(v) })),
       },
-      { name: "b", label: "b (0-25)", type: "number", defaultValue: "8" },
+      { name: "b", label: "b (kunci geser, 0-25)", type: "number", defaultValue: "8" },
     ],
   },
   {
