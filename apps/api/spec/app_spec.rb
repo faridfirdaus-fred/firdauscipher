@@ -273,6 +273,16 @@ RSpec.describe FirdausCipher::App do
       expect(last_response.body).not_to include('type="hidden" name="input_text"')
     end
 
+    it "GET / menyediakan panel enkripsi/dekripsi file (upload + unduh)" do
+      get "/"
+
+      expect(last_response.body).to include('Enkripsi / Dekripsi File')
+      expect(last_response.body).to include('type="file" id="file-input"')
+      expect(last_response.body).to include('id="file-direction"')
+      expect(last_response.body).to include("'/api/encrypt-file'")
+      expect(last_response.body).to include("'/api/decrypt-file'")
+    end
+
     it "POST /gui memproses teks biasa dan menampilkan hasil" do
       post "/gui", {
         "cipher" => "vigenere", "direction" => "encrypt",

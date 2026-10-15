@@ -19,6 +19,9 @@
       width:100%; padding:.55rem .7rem; border-radius:8px; border:1px solid #475569;
       background:#0b1220; color:var(--ink); font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:.9rem; }
     textarea { min-height:90px; resize:vertical; }
+    input[type=file] { width:100%; padding:.5rem; border-radius:8px; border:1px dashed #475569;
+      background:#0b1220; color:var(--mut); font-size:.85rem; }
+    h2 { font-size:1.05rem; margin:0 0 .35rem; }
     .row { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
     button { padding:.6rem 1.1rem; border-radius:8px; border:0; background:var(--acc);
              color:#062033; font-weight:700; cursor:pointer; font-size:.9rem; }
@@ -36,7 +39,7 @@
 <body>
 <div class="wrap">
   <h1>FirdausCipher <span class="badge">GUI mini · Ruby</span></h1>
-  <p class="sub">Implementasi ulang Bonus 2. Semua cipher a–h diproses di server Ruby —
+  <p class="sub">Semua cipher a–h diproses di server Ruby —
      hasilnya harus sama persis dengan GUI web (TypeScript).</p>
 
   <% if error %>
@@ -70,6 +73,38 @@
       <button type="button" class="sec" id="swap">Tukar input ⇄ output</button>
     </div>
   </form>
+
+  <div class="card">
+    <h2>Enkripsi / Dekripsi File</h2>
+    <p class="kv">File apa pun (gambar, audio, video, database) diproses di server Ruby
+       dan diunduh otomatis. Gunakan cipher biner (c/g) agar file utuh saat didekripsi.</p>
+
+    <label for="file-cipher">Cipher <span class="hint">— dipakai saat enkripsi; saat dekripsi dibaca dari file .dat</span></label>
+    <select id="file-cipher">
+      <% ciphers.each do |c| %>
+        <option value="<%= c['slug'] %>" data-fields='<%= c['keyFields'].to_json %>'>
+          <%= c['label'] %>
+        </option>
+      <% end %>
+    </select>
+
+    <div id="file-fields"></div>
+
+    <label for="file-direction">Arah</label>
+    <select id="file-direction">
+      <option value="encrypt">Enkripsi (file → .dat)</option>
+      <option value="decrypt">Dekripsi (.dat → file asli)</option>
+    </select>
+
+    <label for="file-input">Pilih file</label>
+    <input type="file" id="file-input" />
+
+    <div class="row">
+      <button type="button" id="file-go">Proses File</button>
+    </div>
+
+    <div id="file-status" class="kv"></div>
+  </div>
 
   <% if result %>
     <div class="card">
@@ -129,6 +164,117 @@ curl -s -X POST http://127.0.0.1:9292/api/encrypt \
   swap.addEventListener('click', () => {
     const out = document.getElementById('output');
     if (out) document.getElementById('input').value = out.textContent.trim();
+  });
+
+  // ------------------------------------------------------------------
+  // Panel FILE: upload -> enkripsi/dekripsi di server -> unduh otomatis.
+  // ------------------------------------------------------------------
+  const fCipher = document.getElementById('file-cipher');
+  const fFields = document.getElementById('file-fields');
+  const fDir = document.getElementById('file-direction');
+  const fInput = document.getElementById('file-input');
+  const fGo = document.getElementById('file-go');
+  const fStatus = document.getElementById('file-status');
+
+  // Render field kunci khusus untuk cipher yang dipilih (dipakai saat enkripsi).
+  function renderFileFields() {
+    const def = defs.find(d => d.slug === fCipher.value);
+    fFields.innerHTML = '';
+    (def.keyFields || []).forEach(f => {
+      const wrap = document.createElement('div');
+      const val = f.defaultValue ?? '';
+      let inner;
+      if (f.type === 'select') {
+        const opts = (f.options || []).map(
+          o => `<option value="${o.value}" ${o.value==val?'selected':''}>${o.label}</option>`).join('');
+        inner = `<select name="${f.name}">${opts}</select>`;
+      } else {
+        inner = `<input type="${f.type === 'number' ? 'number' : 'text'}" name="${f.name}"
+                  value="${val}" placeholder="${f.label}">`;
+      }
+      wrap.innerHTML = `<label>${f.label}</label>${inner}`;
+      fFields.appendChild(wrap);
+    });
+    // Saat dekripsi, kunci dibaca dari header file .dat -> sembunyikan field.
+    fFields.style.display = fDir.value === 'decrypt' ? 'none' : '';
+  }
+
+  function collectFileParams() {
+    const params = {};
+    fFields.querySelectorAll('input, select').forEach(el => {
+      if (el.name) params[el.name] = el.value;
+    });
+    return params;
+  }
+
+  // Baca File -> byte -> base64 (buang prefix data URL).
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const s = String(reader.result);
+        resolve(s.slice(s.indexOf(',') + 1));
+      };
+      reader.onerror = () => reject(new Error('Gagal membaca berkas.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function fileNameFromHeaders(res, fallback) {
+    const cd = res.headers.get('Content-Disposition') || '';
+    const m = /filename="?([^"]+)"?/.exec(cd);
+    return m ? m[1] : fallback;
+  }
+
+  fCipher.addEventListener('change', renderFileFields);
+  fDir.addEventListener('change', renderFileFields);
+  renderFileFields();
+
+  fGo.addEventListener('click', async () => {
+    const file = fInput.files && fInput.files[0];
+    if (!file) { fStatus.innerHTML = '<span class="err">Pilih berkas dulu.</span>'; return; }
+
+    const direction = fDir.value;
+    const isEncrypt = direction === 'encrypt';
+    fGo.disabled = true;
+    fStatus.textContent = 'Memproses…';
+
+    try {
+      const b64 = await fileToBase64(file);
+      const url = isEncrypt ? '/api/encrypt-file' : '/api/decrypt-file';
+      const payload = isEncrypt
+        ? { cipher: fCipher.value, name: file.name, mime: file.type, input: b64,
+            params: collectFileParams() }
+        : { input: b64 };
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const ctype = res.headers.get('Content-Type') || '';
+      if (!res.ok || ctype.includes('application/json')) {
+        const err = await res.json().catch(() => ({ message: 'Terjadi kesalahan.' }));
+        throw new Error(err.message || `HTTP ${res.status}`);
+      }
+
+      const blob = await res.blob();
+      const outName = fileNameFromHeaders(res, isEncrypt ? file.name + '.dat' : file.name);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = outName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+
+      fStatus.innerHTML = `<span class="ok">Berhasil:</span> ${blob.size} byte → <strong>${outName}</strong> (terunduh).`;
+    } catch (e) {
+      fStatus.innerHTML = `<span class="err">Gagal:</span> ${e.message}`;
+    } finally {
+      fGo.disabled = false;
+    }
   });
 </script>
 </body>
