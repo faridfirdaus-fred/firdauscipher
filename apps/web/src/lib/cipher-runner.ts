@@ -53,6 +53,52 @@ export interface FileDecryptResult {
   warnings: string[];
 }
 
+/**
+ * Catatan kesesuaian cipher untuk mode FILE, ditampilkan PROAKTIF di GUI
+ * begitu cipher/mode dipilih (bukan menunggu tombol enkripsi ditekan).
+ *
+ * Huruf soal (a–h) sengaja TIDAK dipakai di sini: pengguna cukup membaca nama
+ * cipher. Teks ini kembar dengan panel file GUI mini Ruby (index.erb).
+ */
+export function fileCipherNotice(
+  cipherName: string,
+  isAlpha: boolean,
+  direction: Direction,
+): { variant: "warning" | "success" | "info"; title: string; body: string } {
+  // Saat dekripsi, cipher & kunci dibaca dari header .dat -> pilihan di atas
+  // tidak berpengaruh. Cukup beri tahu, bukan peringatan.
+  if (direction === "decrypt") {
+    return {
+      variant: "info",
+      title: "Info",
+      body:
+        "Saat dekripsi, cipher & kunci dibaca otomatis dari header berkas .dat. " +
+        "Pilihan cipher di atas diabaikan.",
+    };
+  }
+  // Enkripsi: cipher 26 huruf hanya memproses A-Z, byte lain (header file,
+  // 0x00, gambar, audio) akan HILANG dan file TIDAK BISA dipulihkan.
+  if (isAlpha) {
+    return {
+      variant: "warning",
+      title: "Perhatian",
+      body:
+        `Cipher ${cipherName} hanya memproses huruf A–Z. Berkas biner ` +
+        "(gambar, audio, video, database) akan kehilangan semua byte non-huruf " +
+        "termasuk header berkas, dan tidak bisa dikembalikan seperti semula. " +
+        "Untuk berkas, pilih Extended Vigenere atau Super Enkripsi / Transposisi Kolom.",
+    };
+  }
+  // Cipher biner: aman untuk berkas apa pun.
+  return {
+    variant: "success",
+    title: "Aman",
+    body:
+      `Cipher ${cipherName} memproses seluruh byte (0–255), sehingga berkas apa ` +
+      "pun bisa didekripsi kembali utuh.",
+  };
+}
+
 /** Hitung berapa karakter non-alfabet yang akan dibuang oleh cipher 26 huruf. */
 function countNonAlpha(text: string): number {
   let n = 0;
@@ -128,8 +174,8 @@ export function runFileEncrypt(
     warnings.push(
       `PERINGATAN: "${slug}" hanya memproses huruf A-Z. File biner ini akan ` +
         `KEHILANGAN semua byte non-alfabet (termasuk header file) dan ` +
-        `TIDAK BISA direstorasi. Untuk file, gunakan Extended Vigenere (c) ` +
-        `atau Super Enkripsi (g).`,
+        `TIDAK BISA direstorasi. Untuk file, gunakan Extended Vigenere ` +
+        `atau Super Enkripsi / Transposisi Kolom.`,
     );
   }
   if (bytes.length === 0) throw new Error("File kosong (0 byte).");

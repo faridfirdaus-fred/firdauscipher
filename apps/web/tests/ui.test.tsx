@@ -239,7 +239,25 @@ describe("FilePanel — alur file .dat lewat GUI", () => {
 
     const button = screen.getByRole("button", { name: /Enkripsi & Unduh/i }) as HTMLButtonElement;
     expect(button.disabled).toBe(true);
-    expect(alerts()).toBe("");
+  });
+
+  it("catatan proaktif muncul saat cipher biner dipilih (aman untuk berkas)", () => {
+    render(<FilePanel slug="ext-vigenere" />);
+
+    // Catatan kesesuaian tampil SEBELUM file dipilih / diproses.
+    expect(alerts()).toMatch(/Aman/i);
+    expect(alerts()).toMatch(/seluruh byte \(0–255\)/i);
+  });
+
+  it("catatan proaktif muncul saat cipher 26 huruf dipilih di Mode File", () => {
+    render(<FilePanel slug="vigenere" />);
+
+    // Tanpa huruf soal: cukup nama cipher, dan rujukan cipher tanpa awalan huruf.
+    const text = alerts();
+    expect(text).toMatch(/Perhatian/i);
+    expect(text).toMatch(/Cipher Vigenere Standard hanya memproses huruf A–Z/i);
+    expect(text).toMatch(/pilih Extended Vigenere atau Super Enkripsi \/ Transposisi Kolom/i);
+    expect(text).not.toMatch(/\b[acg]\)/i);
   });
 
   it("file TEKS -> .dat dengan header lengkap (nama, ekstensi, mode binary)", async () => {

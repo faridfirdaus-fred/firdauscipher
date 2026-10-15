@@ -305,18 +305,18 @@ curl -s -X POST http://127.0.0.1:9292/api/encrypt \
     if (def.isAlpha) {
       fWarn.innerHTML =
         '<div class="alert danger"><strong>Perhatian:</strong> ' +
-        `Cipher <em>${def.label}</em> hanya memproses huruf A–Z. Berkas biner ` +
+        `Cipher <em>${def.name}</em> hanya memproses huruf A–Z. Berkas biner ` +
         '(gambar, audio, video, database) akan <strong>kehilangan semua byte ' +
         'non-huruf</strong> termasuk header berkas, dan <strong>tidak bisa ' +
         'dikembalikan seperti semula</strong>. Untuk berkas, pilih ' +
-        '<strong>c) Extended Vigenere</strong> atau <strong>g) Super Enkripsi / ' +
+        '<strong>Extended Vigenere</strong> atau <strong>Super Enkripsi / ' +
         'Transposisi Kolom</strong>.</div>';
       return;
     }
     // Cipher biner: aman untuk berkas apa pun.
     fWarn.innerHTML =
       '<div class="alert ok"><strong>Aman:</strong> ' +
-      `Cipher <em>${def.label}</em> memproses seluruh byte (0–255), sehingga ` +
+      `Cipher <em>${def.name}</em> memproses seluruh byte (0–255), sehingga ` +
       'berkas apa pun bisa didekripsi kembali utuh.</div>';
   }
 

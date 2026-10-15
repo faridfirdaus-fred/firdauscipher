@@ -17,7 +17,7 @@ import { Alert } from "@/components/ui/feedback";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { describeEnvelope, runFileDecrypt, runFileEncrypt } from "@/lib/cipher-runner";
+import { describeEnvelope, fileCipherNotice, runFileDecrypt, runFileEncrypt } from "@/lib/cipher-runner";
 import { CIPHER_ID_BY_SLUG, getCipher, type CipherParams } from "@/lib/crypto";
 import {
   downloadBytes,
@@ -52,6 +52,11 @@ export function FilePanel({ slug }: { slug: string }) {
   const [error, setError] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const { run, progress } = useCipherWorker();
+
+  // Catatan kesesuaian cipher untuk mode FILE, tampil proaktif sesuai cipher
+  // terpilih (bukan menunggu tombol enkripsi ditekan).
+  const encryptNotice = fileCipherNotice(cipher.name, cipher.isAlpha, "encrypt");
+  const decryptNotice = fileCipherNotice(cipher.name, cipher.isAlpha, "decrypt");
 
   React.useEffect(() => {
     setParams(defaultParams(slug));
@@ -178,6 +183,10 @@ export function FilePanel({ slug }: { slug: string }) {
         <TabsContent value="encrypt">
           <Card>
             <CardContent className="grid gap-4 pt-5">
+              <Alert variant={encryptNotice.variant} title={encryptNotice.title}>
+                {encryptNotice.body}
+              </Alert>
+
               <label
                 htmlFor="file-input"
                 className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-8 text-center hover:bg-muted/60"
@@ -221,6 +230,10 @@ export function FilePanel({ slug }: { slug: string }) {
         <TabsContent value="decrypt">
           <Card>
             <CardContent className="grid gap-4 pt-5">
+              <Alert variant={decryptNotice.variant} title={decryptNotice.title}>
+                {decryptNotice.body}
+              </Alert>
+
               <label
                 htmlFor="dat-input"
                 className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 px-4 py-8 text-center hover:bg-muted/60"
