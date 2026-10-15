@@ -55,6 +55,40 @@ function sha256(b: Uint8Array): string {
   return createHash("sha256").update(Buffer.from(b)).digest("hex");
 }
 
+/** Satu baris bukti untuk satu kategori berkas. */
+interface FileSample {
+  category: string;
+  file: string;
+  mime: string;
+  desc: string;
+  bytes: number;
+  cipherBytes: number;
+  plainHex: string;
+  plainAscii: string;
+  cipherHex: string;
+  cipherAscii: string;
+  shaBefore: string;
+  shaAfter: string;
+  identical: boolean;
+}
+
+/** Satu contoh pesan teks (plainteks -> cipherteks) untuk cipher 26 huruf. */
+interface TextSample {
+  cipher: string;
+  params: CipherParams;
+  plaintext: string;
+  ciphertext: string;
+  decrypted: string;
+}
+
+/** Struktur berkas `laporan/uji-file/samples.json`. */
+interface SamplesOutput {
+  generated: string;
+  cipher: typeof FILE_CIPHER;
+  files: FileSample[];
+  text: TextSample[];
+}
+
 function hexdump(bytes: Uint8Array, n = 16): { hex: string; ascii: string } {
   const slice = bytes.slice(0, n);
   const hex = Array.from(slice)
@@ -69,7 +103,7 @@ function hexdump(bytes: Uint8Array, n = 16): { hex: string; ascii: string } {
 function main(): void {
   mkdirSync(OUT_DIR, { recursive: true });
 
-  const out: any = {
+  const out: SamplesOutput = {
     generated: new Date().toISOString(),
     cipher: FILE_CIPHER,
     files: [],
@@ -88,11 +122,11 @@ function main(): void {
     const back = runCipher(FILE_CIPHER.slug, "decrypt", cipher, FILE_CIPHER.params);
     const restored = back.slice(0, plain.length);
 
-    const p = hexdump(plain) as any;
-    const c = hexdump(cipher) as any;
+    const p = hexdump(plain);
+    const c = hexdump(cipher);
     const identical = sha256(plain) === sha256(restored);
 
-    const rec = {
+    const rec: FileSample = {
       category: f.category,
       file: f.file,
       mime: f.mime,
@@ -125,7 +159,7 @@ function main(): void {
     const plainBytes = new TextEncoder().encode(t.plaintext);
     const enc = runCipher(t.cipher, "encrypt", plainBytes, t.params);
     const dec = runCipher(t.cipher, "decrypt", enc, t.params);
-    const rec = {
+    const rec: TextSample = {
       cipher: t.cipher,
       params: t.params,
       plaintext: t.plaintext,
