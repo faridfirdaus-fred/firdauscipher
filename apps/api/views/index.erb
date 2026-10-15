@@ -222,7 +222,12 @@ curl -s -X POST http://127.0.0.1:9292/api/encrypt \
     const current = decodeURIComponent(btn.dataset.grid || '');
     const gridEl = document.querySelector(`.matrix-grid[data-scope="${scope}"][data-name="${name}"]`);
     const n = Number(btn.dataset.size);
-    const grid = resizeGrid(parseGrid(current), n);
+    // Pakai default valid per ukuran kalau ada (sizeDefaults), supaya matriks
+    // langsung bisa dipakai, bukan potongan default ukuran lain yang singular.
+    const def = defs.find(d => d.slug === sel.value);
+    const field = def && (def.keyFields || []).find(f => f.name === name);
+    const preset = field && field.sizeDefaults && field.sizeDefaults[String(n)];
+    const grid = preset ? parseGrid(preset) : resizeGrid(parseGrid(current), n);
     gridEl.style.gridTemplateColumns = `repeat(${n}, 4rem)`;
     gridEl.innerHTML = grid.map((row, r) => row.map((cell, c) =>
       `<input type="text" inputmode="numeric" class="cell"

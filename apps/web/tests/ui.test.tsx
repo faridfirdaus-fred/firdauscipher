@@ -124,6 +124,34 @@ describe("TextPanel — enkripsi/dekripsi teks lewat GUI", () => {
     await waitFor(() => expect(output().value).toBe("poh"));
   });
 
+  it("Hill: ganti ukuran 2x2 langsung valid (tanpa isi manual) — regresi default singular", async () => {
+    const user = userEvent.setup();
+    render(<TextPanel slug="hill" />);
+
+    // Default awal 3x3 valid; klik 2x2 tidak boleh memotongnya jadi matriks
+    // singular. Setelah pindah ukuran, langsung enkripsi harus sukses.
+    await pilihUkuran(user, "2×2");
+    await user.type(screen.getByLabelText(/Plaintext/i), "HELP");
+    await user.click(screen.getByRole("button", { name: "Enkripsi" }));
+
+    await waitFor(() => expect(alerts()).not.toMatch(/determinan|det|gcd/i));
+    expect(output().value).toBe("hiat"); // kunci default 2x2 = [[3,3],[2,5]]
+  });
+
+  it("Hill: bolak-balik 2x2 -> 3x3 -> 2x2 tetap valid", async () => {
+    const user = userEvent.setup();
+    render(<TextPanel slug="hill" />);
+
+    await pilihUkuran(user, "2×2");
+    await pilihUkuran(user, "3×3");
+    await pilihUkuran(user, "2×2");
+    await user.type(screen.getByLabelText(/Plaintext/i), "HELP");
+    await user.click(screen.getByRole("button", { name: "Enkripsi" }));
+
+    await waitFor(() => expect(alerts()).not.toMatch(/determinan|det|gcd/i));
+    expect(output().value).toBe("hiat");
+  });
+
   it("Enigma: kunci default -> AAAAA menjadi bdzgo", async () => {
     const user = userEvent.setup();
     render(<TextPanel slug="enigma" />);

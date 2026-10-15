@@ -45,6 +45,13 @@ export interface KeyField {
   options?: { value: string; label: string }[];
   /** Khusus tipe "matrix": ukuran yang boleh dipilih GUI (mis. [2, 3]). */
   sizes?: number[];
+  /**
+   * Khusus tipe "matrix": nilai default PER ukuran, mis. { 2: "3,3;2,5",
+   * 3: "6,24,1;13,16,10;20,17,15" }. Dipakai saat pengguna berganti ukuran
+   * supaya matriks yang muncul langsung valid (det koprima 26), bukan hasil
+   * pemotongan default ukuran lain yang bisa jadi singular.
+   */
+  sizeDefaults?: Record<number, string>;
 }
 
 /** Metadata satu cipher. */
@@ -263,6 +270,11 @@ export const CIPHERS: CipherDef[] = [
         type: "matrix",
         sizes: [2, 3],
         defaultValue: "6,24,1;13,16,10;20,17,15",
+        sizeDefaults: {
+          // Keduanya valid: det(2×2)=9 → gcd(9,26)=1; det(3×3)=441≡25 → gcd=1.
+          2: "3,3;2,5",
+          3: "6,24,1;13,16,10;20,17,15",
+        },
         placeholder: "6,24,1;13,16,10;20,17,15",
         help: "Pilih ukuran, lalu isi tiap sel. Determinan harus koprima dengan 26.",
       },

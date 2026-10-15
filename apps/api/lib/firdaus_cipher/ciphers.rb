@@ -166,6 +166,9 @@ module FirdausCipher
                   [{ "name" => "matrix", "label" => "Matriks kunci", "type" => "matrix",
                      "sizes" => [2, 3],
                      "defaultValue" => "6,24,1;13,16,10;20,17,15",
+                     # Default per ukuran supaya ganti ukuran langsung valid
+                     # (det 2x2 = 9, det 3x3 = 441 mod 26 = 25; keduanya koprima 26).
+                     "sizeDefaults" => { "2" => "3,3;2,5", "3" => "6,24,1;13,16,10;20,17,15" },
                      "help" => "Pilih ukuran, lalu isi tiap sel. Determinan harus koprima dengan 26." }]),
         def_entry("columnar", "g", "Transposisi Kolom", "binary", false,
                   "Transposisi kolom pada byte. Dipakai juga sebagai tahap 2 Super Enkripsi.",

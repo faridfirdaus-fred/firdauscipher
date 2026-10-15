@@ -65,7 +65,11 @@ function MatrixField({
   }
 
   function changeSize(n: number) {
-    onChange(field.name, serializeGrid(resizeGrid(parsed, n)));
+    // Pakai default valid per ukuran kalau ada, supaya matriks yang muncul
+    // langsung bisa dipakai (bukan potongan default ukuran lain yang mungkin
+    // singular). Kalau tidak ada, baru potong/perluas grid yang sekarang.
+    const preset = field.sizeDefaults?.[n];
+    onChange(field.name, preset ?? serializeGrid(resizeGrid(parsed, n)));
   }
 
   return (

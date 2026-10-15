@@ -83,6 +83,23 @@ RSpec.describe FirdausCipher::App do
         end
       end
     end
+
+    # Regresi: dulu ganti ukuran matriks Hill memotong default 3x3 jadi 2x2
+    # yang singular (det 18, gcd(18,26)=2) sehingga langsung gagal dipakai.
+    # Setiap sizeDefaults harus benar-benar valid (det koprima 26).
+    it "sizeDefaults Hill valid untuk setiap ukuran" do
+      get "/api/ciphers"
+      hill = JSON.parse(last_response.body)["ciphers"].find { |c| c["slug"] == "hill" }
+      matrix_field = hill["keyFields"].find { |f| f["name"] == "matrix" }
+
+      expect(matrix_field["sizeDefaults"]).to be_a(Hash)
+      matrix_field["sizeDefaults"].each do |size, text|
+        matrix = FirdausCipher::Hill.parse_matrix(text)
+        expect(matrix.length).to eq(size.to_i)
+        # Tidak boleh melempar; kalau singular, parse_matrix sudah raise.
+        expect { FirdausCipher::Hill.validate_hill_key(matrix) }.not_to raise_error
+      end
+    end
   end
 
   describe "POST /api/encrypt" do
