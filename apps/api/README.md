@@ -129,7 +129,7 @@ apps/api/
 │   ├── hill.rb                f) Hill
 │   ├── super_encryption.rb    g) Super Enkripsi
 │   ├── columnar.rb            Transposisi Kolom (bagian dari g)
-│   └── enigma.rb              h) Enigma (Bonus)
+│   └── enigma.rb              h) Enigma
 ├── spec/                      RSpec — 127 contoh
 └── views/                     GUI mini (ERB)
 ```

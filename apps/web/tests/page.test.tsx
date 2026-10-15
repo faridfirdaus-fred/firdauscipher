@@ -117,7 +117,7 @@ describe("S16 — halaman utama", () => {
   it("Enigma menampilkan konfigurasi rotornya, bukan kolom kunci biasa", async () => {
     const user = userEvent.setup();
     render(<Home />);
-    await pilihCipher(user, "Enigma (Bonus)");
+    await pilihCipher(user, "Enigma");
 
     await waitFor(() => {
       expect(screen.getByLabelText(/Rotor \(kiri-tengah-kanan\)/i)).toBeTruthy();

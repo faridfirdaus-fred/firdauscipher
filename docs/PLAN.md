@@ -71,7 +71,7 @@
 |---|---|---|---|
 | **P0 — WAJIB, kerjakan malam ini** | Fondasi + core engine + semua cipher 26 huruf & 256 karakter (spek a–g) | S01–S12 | **7 Okt** |
 | **P1 — WAJIB** | File biner + envelope `.dat` + round-trip 5 kategori + GUI + validasi | S13–S17 | **8 Okt pagi** |
-| **P2 — WAJIB (bonus & hosting)** | ⭐ Enigma (bonus 1) + ⭐ Ruby backend (bonus 2) + cross-verify + deploy Cloudflare & Render | S19–S26 | **8 Okt malam** |
+| **P2 — WAJIB (bonus & hosting)** | ⭐ Enigma + ⭐ Ruby backend (bonus 2) + cross-verify + deploy Cloudflare & Render | S19–S26 | **8 Okt malam** |
 | **P3 — WAJIB penutup** | QA/test + README + laporan PDF + packaging zip | S27–S29, S31 | **9 Okt pagi** |
 | **P4 — NILAI TAMBAH (boleh dilewat)** | Web Worker (S18) + kreativitas/inovasi (S30) | S18, S30 | kalau masih ada waktu |
 
@@ -479,7 +479,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 
 ### FASE F6 — ⭐ BONUS 1
 
-#### S19 — ⭐ Enigma Cipher (bonus h)
+#### S19 — ⭐ Enigma Cipher
 - [x] STATUS: DONE
 - 🔑 Kata kunci: enigma, rotor I V, rotor wiring, reflector B, ring setting, ringstellung, plugboard, steckerbrett, notch, stepping, double step, 3 rotor
 - 📦 Deliverable: `encryptEnigma` + `decryptEnigma` + UI tab + dokumentasi konfigurasi
@@ -711,7 +711,7 @@ Catatan: key berulang panjang bebas; Playfair matriks 5×5 (I/J digabung); Affin
 | 5 | e) Affine | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | ⬜ | |
 | 6 | f) Hill | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | ⬜ | |
 | 7 | g) Super enkripsi | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | ⬜ | |
-| 8 | h) ⭐ Enigma (bonus) | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | ⬜ | |
+| 8 | h) ⭐ Enigma | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | ⬜ | |
 | 9 | i) ⭐ Ruby (bonus) | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | ⬜ | |
 
 **Tabel file uji wajib (R2):**

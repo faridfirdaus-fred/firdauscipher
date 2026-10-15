@@ -1,5 +1,5 @@
 /**
- * enigma.ts — Enigma Cipher (Bonus 1, h).
+ * enigma.ts — Enigma Cipher (h).
  *
  * Model: Enigma I, 3 rotor, reflector B, plugboard opsional, ring setting
  * (Ringstellung) + posisi awal (Grundstellung) bisa diatur.

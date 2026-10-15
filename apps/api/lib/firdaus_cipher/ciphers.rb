@@ -177,7 +177,7 @@ module FirdausCipher
                     { "name" => "key2", "label" => "Kunci 2 (Transposisi Kolom)", "type" => "text",
                       "defaultValue" => "ZEBRAS" }
                   ]),
-        def_entry("enigma", "h", "Enigma (Bonus)", "base64-text", true,
+        def_entry("enigma", "h", "Enigma", "base64-text", true,
                   "Enigma I: 3 rotor, reflector B, ring setting, posisi awal, plugboard opsional.",
                   [
                     { "name" => "rotors", "label" => "Rotor (kiri-tengah-kanan)", "type" => "text",

@@ -2,7 +2,7 @@
 
 require_relative "core"
 
-# enigma.rb — Enigma Cipher (Bonus 1, h).
+# enigma.rb — Enigma Cipher (h).
 # Port 1:1 dari apps/web/src/lib/crypto/enigma.ts.
 #
 # Model: Enigma I, 3 rotor, reflector B, plugboard opsional, ring setting

@@ -293,7 +293,7 @@ export const CIPHERS: CipherDef[] = [
     id: CipherId.ENIGMA,
     slug: "enigma",
     letter: "h",
-    name: "Enigma (Bonus)",
+    name: "Enigma",
     mode: "base64-text",
     isAlpha: true,
     description: "Enigma I: 3 rotor, reflector B, ring setting, posisi awal, plugboard opsional.",

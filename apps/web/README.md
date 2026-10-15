@@ -83,7 +83,7 @@ src/
     │   ├── hill.ts         f) Hill (2×2 & 3×3)
     │   ├── super-encryption.ts    g) Super Enkripsi
     │   ├── columnar.ts     Transposisi Kolom (bagian dari g)
-    │   └── enigma.ts       h) Enigma (Bonus)
+    │   └── enigma.ts       h) Enigma
     ├── cipher-runner.ts    alur enkripsi/dekripsi FILE (pakai envelope)
     ├── worker-client.ts    pemanggil Web Worker
     ├── cipher.worker.ts    worker: jalankan cipher tanpa membekukan UI

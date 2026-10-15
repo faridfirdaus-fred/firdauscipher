@@ -85,7 +85,7 @@ const TEXT_CASES: TextCase[] = [
   { label: "Transposisi Kolom (bagian g)", slug: "columnar", kind: "binary", text: "SERANG SUBUH SEKALI", params: { key: "ZEBRAS" } },
   { label: "g) Super Enkripsi", slug: "super", kind: "binary", text: "SERANG SUBUH SEKALI", params: { key1: "RAHASIA", key2: "ZEBRAS" } },
   {
-    label: "h) Enigma (Bonus)",
+    label: "h) Enigma",
     slug: "enigma",
     kind: "alpha",
     text: "KRIPTOGRAFI",

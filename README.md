@@ -56,7 +56,7 @@ Huruf mengikuti penomoran soal UTS.
 | **e** | Affine | 26 huruf | `a` (12 nilai koprima), `b` | `E(x) = (a·x + b) mod 26` |
 | **f** | Hill | 26 huruf | Matriks (2×2 atau 3×3) | `ACT` + `[[6,24,1],[13,16,10],[20,17,15]]` → `poh` |
 | **g** | Super Enkripsi | biner | Kunci 1 + Kunci 2 | Vigenere 256 **+** Transposisi Kolom |
-| **h** | Enigma (Bonus) | 26 huruf | Rotor, reflector, ring, posisi, plugboard | 3 rotor `I,II,III`, reflector `B` |
+| **h** | Enigma | 26 huruf | Rotor, reflector, ring, posisi, plugboard | 3 rotor `I,II,III`, reflector `B` |
 
 **Catatan penomoran.** Transposisi Kolom **tidak** diberi huruf sendiri karena
 merupakan tahap ke-2 dari Super Enkripsi (soal poin g). Di antarmuka ia tampil

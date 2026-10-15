@@ -56,7 +56,7 @@ const CASES: Case[] = [
   { slug: "super", label: "Super Enkripsi", text: "SERANG SUBUH SEKALI", keys: { key1: "RAHASIA", key2: "ZEBRAS" } },
   {
     slug: "enigma",
-    label: "Enigma (Bonus)",
+    label: "Enigma",
     text: "KRIPTOGRAFI",
     keys: { rotors: "I,II,III", ring: "AAA", position: "AAA", plugboard: "" },
   },

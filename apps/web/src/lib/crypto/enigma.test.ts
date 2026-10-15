@@ -10,7 +10,7 @@ const STANDARD = {
   plugboard: "",
 };
 
-describe("Enigma (bonus h)", () => {
+describe("Enigma (h)", () => {
   it("AAAAA dengan rotor I-II-III, reflector B, ring AAA, pos AAA -> BDZGO", () => {
     expect(encryptEnigma("AAAAA", STANDARD)).toBe("bdzgo");
   });
